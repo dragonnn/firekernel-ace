@@ -4,7 +4,7 @@ mkdir ./output/modules
 make -j4
 rm -rf output/*
 cp ./arch/arm/boot/zImage ./output/boot.img-zImage
-find ! -path './output*' ! -path './cwm-zip*' ! -path './blackhawk-tools*' -name "*.ko -exec cp {} ./output/modules \;
+find ! -path './output*' ! -path './cwm-zip*' ! -path './blackhawk-tools*' -name "*.ko" -exec cp {} ./output/modules \;
 
 cp ./output/boot.img-zImage ./blackhawk-tools/unpack/boot.img-zImage
 cd blackhawk-tools
