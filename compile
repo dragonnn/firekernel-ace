@@ -1,0 +1,20 @@
+#!/bin/bash
+mkdir ./output
+mkdir ./output/modules
+make -j4
+rm -rf output/*
+cp ./arch/arm/boot/zImage ./output/boot.img-zImage
+find ! -path './output*' ! -path './cwm-zip*' ! -path './blackhawk-tools*' -name "*.ko -exec cp {} ./output/modules \;
+
+cp ./output/boot.img-zImage ./blackhawk-tools/unpack/boot.img-zImage
+cd blackhawk-tools
+./repackbootimg.sh boot.img
+
+cd ..
+cp ./blackhawk-tools/boot.img-repack ./output/boot.img
+cp ./output/boot.img cwm-zip/boot.img
+cp ./output/modules/*
+cd cwm-zip
+zip -r -0 newkernel.zip ./* 
+adb push newkernel.zip /sdcard/
+adb reboot recovery
