@@ -331,9 +331,9 @@ static int mdp_lcdc_probe(struct platform_device *pdev)
 
 	lcdc->fb_panel_data.suspend = lcdc_suspend;
 	lcdc->fb_panel_data.resume = lcdc_resume;
-	lcdc->fb_panel_data.wait_vsync = lcdc_wait_vsync;
-	lcdc->fb_panel_data.request_vsync = lcdc_request_vsync;
-	lcdc->fb_panel_data.clear_vsync = lcdc_clear_vsync;
+	lcdc->fb_panel_data.wait_vsync = 0;
+	lcdc->fb_panel_data.request_vsync = 0;
+	lcdc->fb_panel_data.clear_vsync = 0;
 	lcdc->fb_panel_data.blank = lcdc_blank;
 	lcdc->fb_panel_data.unblank = lcdc_unblank;
 	lcdc->fb_panel_data.fb_data = pdata->fb_data;

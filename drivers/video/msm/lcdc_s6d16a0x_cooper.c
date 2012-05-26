@@ -655,22 +655,22 @@ static void s6d16a0x_disp_powerup(void)
 
 		s6d16a0x_vreg_config(VREG_ENABLE);
 
-		if(!display_init)
-			mdelay(1);
-		else
-			msleep(1);
+		//if(!display_init)
+		//	mdelay(1);
+		//else
+		//	msleep(1);
 		gpio_tlmm_config(GPIO_CFG(101, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 		gpio_set_value(lcd_reset, 0);
-		if(!display_init)
-			mdelay(20);
-		else
-			msleep(20);
+		//if(!display_init)
+		//	mdelay(20);
+		//else
+		//	msleep(20);
 		//LCD_RESET_N_HI
 		gpio_set_value(lcd_reset, 1);
-		if(!display_init)
-			mdelay(50);
-		else
-			msleep(50);
+		//if(!display_init)
+		//	mdelay(50);
+		//else
+		//	msleep(50);
 
 		s6d16a0x_state.disp_powered_up = TRUE;
 	}

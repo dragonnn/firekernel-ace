@@ -88,6 +88,7 @@
 //#define __COMPENSATE_SAMPLE__
 #define __CONTROL_CHARGING_SUDDEN_LEVEL_UP__
 
+#define CEILING_POS(X) ((X-(int)(X)) > 0 ? (int)(X+1) : (int)(X))
 
 #define BATTERY_RPC_PROG	0x30000089
 #define BATTERY_RPC_VERS	0x00010001
@@ -121,7 +122,7 @@
 #define ONCRPC_CHARGER_API_VERSIONS_PROC 	0xffffffff
 #define CHARGER_API_VERSION  			0x00010003
 #define DEFAULT_CHARGER_API_VERSION		0x00010001
-#define BATT_RPC_TIMEOUT    1000	/* 1 sec */
+#define BATT_RPC_TIMEOUT    2000	/* 1 sec */
 #define INVALID_BATT_HANDLE    -1
 #define RPC_TYPE_REQ     0
 #define RPC_TYPE_REPLY   1
@@ -131,7 +132,7 @@
 #define CLEANUP_EVENT		(1UL << 2)
 
 #ifdef MAX8899_CHARGER
-#define BATT_CHECK_INTERVAL	( 60 * HZ ) // every 60 sec
+#define BATT_CHECK_INTERVAL	( 3 * HZ ) // every 10 sec
 
 // proc comm re-definition
 #define SMEM_PROC_COMM_CHARGING_INFO	PCOM_OEM_CHARGING_INFO
@@ -464,7 +465,7 @@ struct msm_battery_info {
 
 #define MAX_BATTERY_ADC_COUNT_VALUE			5
 
-#define AVERAGE_SAMPLE_NUMBER			3
+#define AVERAGE_SAMPLE_NUMBER			4
 
 #define CHG_CONNECT			(0x1 << 3)
 #define FULL_CHG_MASK			(0x1 << 2)
@@ -496,6 +497,8 @@ static int boot_done = 0;
 static int boot_cnt = 0;
 
 static int g_chg_en = 0;
+
+//static int voltaje=0;
 
 //fatory jig check 2010.08.06 Huh Won
 int batt_jig_on_status=0;
@@ -606,10 +609,10 @@ static ssize_t battery_show_property(struct device *dev,
         //mutex_lock(&msm_batt_info.rpc_lock);
         spin_lock(&msm_batt_info.lock);
         /* check cache time to decide if we need to update */
-        if (msm_batt_info.update_time &&
+        /*if (msm_batt_info.update_time &&
             time_before(jiffies, msm_batt_info.update_time +
                                 msecs_to_jiffies(cache_time)))
-                goto dont_need_update;
+                goto dont_need_update;*/
         
         //if (get_batt_info(&msm_batt_info.rep) < 0) {
         //       printk(KERN_ERR "%s: rpc failed!!!\n", __FUNCTION__);
@@ -617,7 +620,7 @@ static ssize_t battery_show_property(struct device *dev,
                 msm_batt_info.update_time = jiffies;
         //}
 		
-dont_need_update:
+//dont_need_update:
         //mutex_unlock(&msm_batt_info.rpc_lock);
         spin_unlock(&msm_batt_info.lock);
 
@@ -1026,60 +1029,24 @@ extern int fsa9280_i2c_write(unsigned char u_addr, unsigned char u_data);
 #define FSA_DTYPE2 	0x0B
 
 #define BATT_LOW_VOLT		3400
-#define BATT_LEVEL01_VOLT	3510
-#define BATT_LEVEL02_VOLT	3550
-#define BATT_LEVEL03_VOLT	3590
-#define BATT_LEVEL04_VOLT	3630
-#define BATT_LEVEL05_VOLT	3670
-#define BATT_LEVEL06_VOLT	3683
-#define BATT_LEVEL07_VOLT	3696
-#define BATT_LEVEL08_VOLT	3710
-#define BATT_LEVEL09_VOLT	3720
-#define BATT_LEVEL10_VOLT	3730
-#define BATT_LEVEL11_VOLT	3740
-#define BATT_LEVEL12_VOLT	3750
-#define BATT_LEVEL13_VOLT	3772
-#define BATT_LEVEL14_VOLT	3795
-#define BATT_LEVEL15_VOLT	3817
-#define BATT_LEVEL16_VOLT	3840
-#define BATT_LEVEL17_VOLT	3868
-#define BATT_LEVEL18_VOLT	3896
-#define BATT_LEVEL19_VOLT	3924
-#define BATT_LEVEL20_VOLT	3950
-#define BATT_LEVEL21_VOLT	3990
-#define BATT_LEVEL22_VOLT	4030
-#define BATT_LEVEL23_VOLT	4070
-#define BATT_LEVEL24_VOLT	4110
+#define BATT_LEVEL1_VOLT	3550
+#define BATT_LEVEL2_VOLT	3690
+#define BATT_LEVEL3_VOLT	3730
+#define BATT_LEVEL4_VOLT	3770
+#define BATT_LEVEL5_VOLT	3850
+#define BATT_LEVEL6_VOLT	3950
 #define BATT_FULL_VOLT		4200
-#define BATT_RECHAR_VOLT	4150
+#define BATT_RECHAR_VOLT	4140
 
-#define BATT_LOW_ADC		2300
-#define BATT_LEVEL01_ADC	2450
-#define BATT_LEVEL02_ADC	2600
-#define BATT_LEVEL03_ADC	2673
-#define BATT_LEVEL04_ADC	2746
-#define BATT_LEVEL05_ADC	2820
-#define BATT_LEVEL06_ADC    2843
-#define BATT_LEVEL07_ADC	2866
-#define BATT_LEVEL08_ADC	2890
-#define BATT_LEVEL09_ADC	2910
-#define BATT_LEVEL10_ADC	2930
-#define BATT_LEVEL11_ADC	2945
-#define BATT_LEVEL12_ADC	2960
-#define BATT_LEVEL13_ADC	3000
-#define BATT_LEVEL14_ADC	3040
-#define BATT_LEVEL15_ADC	3080
-#define BATT_LEVEL16_ADC	3120
-#define BATT_LEVEL17_ADC	3165
-#define BATT_LEVEL18_ADC	3210
-#define BATT_LEVEL19_ADC	3250
-#define BATT_LEVEL20_ADC	3290
-#define BATT_LEVEL21_ADC	3345
-#define BATT_LEVEL22_ADC	3400 
-#define BATT_LEVEL23_ADC	3455
-#define BATT_LEVEL24_ADC    3514
-#define BATT_FULL_ADC		3624
-#define BATT_RECHR_ADC		3556
+#define BATT_LOW_ADC		2015
+#define BATT_LEVEL1_ADC	2606
+#define BATT_LEVEL2_ADC	2838
+#define BATT_LEVEL3_ADC	2908
+#define BATT_LEVEL4_ADC	2972
+#define BATT_LEVEL5_ADC	3127
+#define BATT_LEVEL6_ADC	3281
+#define BATT_FULL_ADC		3432
+#define BATT_RECHR_ADC		3350
 
 #define BATT_BUF		10
 #define BATT_THR		30
@@ -1131,6 +1098,13 @@ void batt_deregistertimer(struct timer_list* ptimer)
 	}
 }
 
+ void msm_batt_update2(void)
+{
+	power_supply_changed(&msm_psy_ac);
+	power_supply_changed(&msm_psy_usb);
+	power_supply_changed(&msm_psy_batt);
+}
+
 int get_batt_adc(int adc_data_type)
 {
 	int res = 0;
@@ -1155,150 +1129,58 @@ int calculate_batt_level(int batt_volt)
 	
 
 	//if(batt_volt >= BATT_FULL_VOLT) //99%
-	if(batt_volt >= BATT_RECHAR_VOLT) //100%
+	if(batt_volt >= BATT_FULL_VOLT) //100%
 	{
 		scaled_level = 100;
 	}
-	else if(batt_volt >=  BATT_LEVEL24_VOLT) 
+	else if(batt_volt >=  BATT_LEVEL6_VOLT) //99% ~ 80%
 	{
-scaled_level = ((batt_volt -BATT_LEVEL24_VOLT+1)*3)/(BATT_RECHAR_VOLT-BATT_LEVEL24_VOLT);
-scaled_level = scaled_level+96;
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
+//		scaled_level = ((batt_volt -BATT_LEVEL6_VOLT+1)*9)/(BATT_FULL_VOLT-BATT_LEVEL6_VOLT);
+		//scaled_level = ((batt_volt -BATT_LEVEL6_VOLT+1)*19)/(BATT_RECHAR_VOLT-BATT_LEVEL6_VOLT);
+// 		scaled_level = scaled_level+90;
 // 		scaled_level = scaled_level+80;
+
 	}
-	else if(batt_volt >= BATT_LEVEL23_VOLT) 
+	else if(batt_volt >= BATT_LEVEL5_VOLT) //79% ~ 65%
 	{
-scaled_level = ((batt_volt -BATT_LEVEL23_VOLT)*4)/(BATT_LEVEL24_VOLT-BATT_LEVEL23_VOLT);
-scaled_level = scaled_level+92;
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
 		//scaled_level = ((batt_volt -BATT_LEVEL5_VOLT)*15)/(BATT_LEVEL6_VOLT-BATT_LEVEL5_VOLT);
 // 		scaled_level = scaled_level+70;
  //		scaled_level = scaled_level+65;
 	}
-		else if(batt_volt >= BATT_LEVEL22_VOLT)
-	{	 
-scaled_level = ((batt_volt -BATT_LEVEL22_VOLT)*4)/(BATT_LEVEL23_VOLT-BATT_LEVEL22_VOLT);
-scaled_level = scaled_level+88;
+	else if(batt_volt >= BATT_LEVEL4_VOLT) //64% ~ 50%
+	{
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
 		//scaled_level = ((batt_volt -BATT_LEVEL4_VOLT)*15)/(BATT_LEVEL5_VOLT-BATT_LEVEL4_VOLT);
 // 		scaled_level = scaled_level+50;
  //		scaled_level = scaled_level+50;
 	}
-	else if(batt_volt >= BATT_LEVEL21_VOLT) 
+	else if(batt_volt >= BATT_LEVEL3_VOLT) //49% ~ 35%
 	{
-scaled_level = ((batt_volt -BATT_LEVEL21_VOLT)*4)/(BATT_LEVEL22_VOLT-BATT_LEVEL21_VOLT);
-scaled_level = scaled_level+84;
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
 		//scaled_level = ((batt_volt -BATT_LEVEL3_VOLT)*15)/(BATT_LEVEL4_VOLT-BATT_LEVEL3_VOLT);
 // 		scaled_level = scaled_level+30;
 //		scaled_level = scaled_level+35;
 	}
-	else if(batt_volt >= BATT_LEVEL20_VOLT) 
+	else if(batt_volt >= BATT_LEVEL2_VOLT) //34% ~ 20%
 	{
-scaled_level = ((batt_volt -BATT_LEVEL20_VOLT)*4)/(BATT_LEVEL21_VOLT-BATT_LEVEL20_VOLT);
-	scaled_level = scaled_level+80;
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
 		//scaled_level = ((batt_volt -BATT_LEVEL2_VOLT)*15)/(BATT_LEVEL3_VOLT-BATT_LEVEL2_VOLT);
  //		scaled_level = scaled_level+20;
 	}
-	else if(batt_volt >= BATT_LEVEL19_VOLT) 
+	else if(batt_volt >= BATT_LEVEL1_VOLT) //19% ~ 5%
 	{
-scaled_level = ((batt_volt -BATT_LEVEL19_VOLT)*4)/(BATT_LEVEL20_VOLT-BATT_LEVEL19_VOLT);
-scaled_level = scaled_level+76;
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
 		//scaled_level = ((batt_volt -BATT_LEVEL1_VOLT)*15)/(BATT_LEVEL2_VOLT-BATT_LEVEL1_VOLT);
  //		scaled_level = scaled_level+5;
 	}
-		else if(batt_volt >= BATT_LEVEL18_VOLT) 
+	else if(batt_volt > BATT_LOW_VOLT) //4% ~ 1%
 	{
-scaled_level = ((batt_volt -BATT_LEVEL18_VOLT)*4)/(BATT_LEVEL19_VOLT-BATT_LEVEL18_VOLT);
-scaled_level = scaled_level+72;
-    }
-		else if(batt_volt >= BATT_LEVEL17_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL17_VOLT)*4)/(BATT_LEVEL18_VOLT-BATT_LEVEL17_VOLT);
-scaled_level = scaled_level+68;
-    }    
-		else if(batt_volt >= BATT_LEVEL16_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL16_VOLT)*4)/(BATT_LEVEL17_VOLT-BATT_LEVEL16_VOLT);
-scaled_level = scaled_level+64;
-    }
-		else if(batt_volt >= BATT_LEVEL15_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL15_VOLT)*4)/(BATT_LEVEL16_VOLT-BATT_LEVEL15_VOLT);
-scaled_level = scaled_level+60;
-    } 
-		else if(batt_volt >= BATT_LEVEL14_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL14_VOLT)*4)/(BATT_LEVEL15_VOLT-BATT_LEVEL14_VOLT);
-scaled_level = scaled_level+56;
-    }
-		else if(batt_volt >= BATT_LEVEL13_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL13_VOLT)*4)/(BATT_LEVEL14_VOLT-BATT_LEVEL13_VOLT);
-scaled_level = scaled_level+52;
-    }
-		else if(batt_volt >= BATT_LEVEL12_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL12_VOLT)*4)/(BATT_LEVEL13_VOLT-BATT_LEVEL12_VOLT);
-scaled_level = scaled_level+48;
-    }
-		else if(batt_volt >= BATT_LEVEL11_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL11_VOLT)*4)/(BATT_LEVEL12_VOLT-BATT_LEVEL11_VOLT);
-scaled_level = scaled_level+44;
-    }
-		else if(batt_volt >= BATT_LEVEL10_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL10_VOLT)*4)/(BATT_LEVEL11_VOLT-BATT_LEVEL10_VOLT);
-scaled_level = scaled_level+40;
-    }
-		else if(batt_volt >= BATT_LEVEL09_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL09_VOLT)*4)/(BATT_LEVEL10_VOLT-BATT_LEVEL09_VOLT);
-scaled_level = scaled_level+36;
-    }
-		else if(batt_volt >= BATT_LEVEL08_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL08_VOLT)*4)/(BATT_LEVEL09_VOLT-BATT_LEVEL08_VOLT);
-scaled_level = scaled_level+32;
-    }
- 		else if(batt_volt >= BATT_LEVEL07_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL07_VOLT)*4)/(BATT_LEVEL08_VOLT-BATT_LEVEL07_VOLT);
-scaled_level = scaled_level+28;
-    }
- 		else if(batt_volt >= BATT_LEVEL06_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL06_VOLT)*4)/(BATT_LEVEL07_VOLT-BATT_LEVEL06_VOLT);
-scaled_level = scaled_level+24;
-    }
-		else if(batt_volt >= BATT_LEVEL05_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL05_VOLT)*4)/(BATT_LEVEL06_VOLT-BATT_LEVEL05_VOLT);
-scaled_level = scaled_level+20;
-    } 
- 		else if(batt_volt >= BATT_LEVEL04_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL04_VOLT)*4)/(BATT_LEVEL05_VOLT-BATT_LEVEL04_VOLT);
-scaled_level = scaled_level+16;
-    }      
-  		else if(batt_volt >= BATT_LEVEL03_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL03_VOLT)*4)/(BATT_LEVEL04_VOLT-BATT_LEVEL03_VOLT);
-scaled_level = scaled_level+12;
-    }  
-   		else if(batt_volt >= BATT_LEVEL02_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL02_VOLT)*4)/(BATT_LEVEL03_VOLT-BATT_LEVEL02_VOLT);
-scaled_level = scaled_level+8;
-    }  
-   		else if(batt_volt >= BATT_LEVEL01_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LEVEL01_VOLT)*4)/(BATT_LEVEL02_VOLT-BATT_LEVEL01_VOLT);
-scaled_level = scaled_level+4;
-    }                                  
-	else if(batt_volt > BATT_LOW_VOLT) 
-	{
-scaled_level = ((batt_volt -BATT_LOW_VOLT)*4)/(BATT_LEVEL01_VOLT-BATT_LOW_VOLT);
-scaled_level = scaled_level+1;
+scaled_level=CEILING_POS(((batt_volt -BATT_LOW_VOLT)*100)/(BATT_FULL_VOLT-BATT_LOW_VOLT));
 //scaled_level = ((batt_volt -BATT_LOW_VOLT)*4)/(BATT_LEVEL1_VOLT-BATT_LOW_VOLT);
  //		scaled_level = scaled_level+1;
+
 	}
 	else
 	{
@@ -1311,22 +1193,22 @@ scaled_level = scaled_level+1;
 	return scaled_level;
 }
 
-#define BATT_CAL_CHG 150
+#define BATT_CAL_CHG 50
 
 int calculate_batt_voltage(int vbatt_adc)
 {
 	int batt_volt = 0;
 
-	//static int BatMax = 0;
-	//static int BatMin = 0;
-	//int BatSum = 0;
-	//static int BatCount = 0;
-	//static int BatAvg = 1;
-	//static int batt_val[BATT_BUF] = {0,};
+	static int BatMax = 0;
+	static int BatMin = 0;
+	int BatSum = 0;
+	static int BatCount = 0;
+	static int BatAvg = 1;
+	static int batt_val[BATT_BUF] = {0,};
 	static int prevVal = 0;
-	//int i = 0;
+	int i = 0;
 
-#ifdef __CONTROL_CHARGING_SUDDEN_LEVEL_UP__
+
 	if(!prevVal)
 	prevVal = vbatt_adc;
 
@@ -1338,12 +1220,12 @@ int calculate_batt_voltage(int vbatt_adc)
 			if( prevVal < (vbatt_adc-BATT_CAL_CHG))
 			{	
 				vbatt_adc = vbatt_adc-BATT_CAL_CHG;		
-				//printk("[Battery] vbatt_adc-BATT_CAL_CHG \n");
+				printk("[Battery] vbatt_adc-BATT_CAL_CHG \n");
 			}	
 			else
 			{
 				vbatt_adc = prevVal;
-				//printk("[Battery] chg_en & prevVal \n");
+				printk("[Battery] chg_en & prevVal \n");
 			}	
 		}
 		else
@@ -1356,7 +1238,7 @@ int calculate_batt_voltage(int vbatt_adc)
 		}
 	}
 	prevVal = vbatt_adc;
-#endif	
+
 	
 	//printk("[Battery] %s : vbatt_adc %d \n", __func__, vbatt_adc);
 	
@@ -1364,134 +1246,45 @@ int calculate_batt_voltage(int vbatt_adc)
 	{
 		batt_volt = BATT_FULL_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL24_ADC) 
+	else if(vbatt_adc >=  BATT_LEVEL6_ADC) //4.200v ~ 3.990v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL24_ADC)*(BATT_FULL_VOLT-BATT_LEVEL24_VOLT))/(BATT_FULL_ADC-BATT_LEVEL24_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL24_VOLT;
+		batt_volt = ((vbatt_adc -BATT_LEVEL6_ADC)*(BATT_FULL_VOLT-BATT_LEVEL6_VOLT))/(BATT_FULL_ADC-BATT_LEVEL6_ADC);
+ 		batt_volt = batt_volt+BATT_LEVEL6_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL23_ADC) 
+	else if(vbatt_adc >=  BATT_LEVEL5_ADC) //3.990v ~ 3.860v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL23_ADC)*(BATT_LEVEL24_VOLT-BATT_LEVEL23_VOLT))/(BATT_LEVEL24_ADC-BATT_LEVEL23_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL23_VOLT;
+		batt_volt = ((vbatt_adc -BATT_LEVEL5_ADC)*(BATT_LEVEL6_VOLT-BATT_LEVEL5_VOLT))/(BATT_LEVEL6_ADC-BATT_LEVEL5_ADC);
+ 		batt_volt = batt_volt+BATT_LEVEL5_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL22_ADC) 
+	else if(vbatt_adc >=  BATT_LEVEL4_ADC) //3.860v ~ 3.760v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL22_ADC)*(BATT_LEVEL23_VOLT-BATT_LEVEL22_VOLT))/(BATT_LEVEL23_ADC-BATT_LEVEL22_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL22_VOLT;
+		batt_volt = ((vbatt_adc -BATT_LEVEL4_ADC)*(BATT_LEVEL5_VOLT-BATT_LEVEL4_VOLT))/(BATT_LEVEL5_ADC-BATT_LEVEL4_ADC);
+ 		batt_volt = batt_volt+BATT_LEVEL4_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL21_ADC) 
+	else if(vbatt_adc >=  BATT_LEVEL3_ADC) //3.760v ~ 3.700v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL21_ADC)*(BATT_LEVEL22_VOLT-BATT_LEVEL21_VOLT))/(BATT_LEVEL22_ADC-BATT_LEVEL21_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL21_VOLT;
+		batt_volt = ((vbatt_adc -BATT_LEVEL3_ADC)*(BATT_LEVEL4_VOLT-BATT_LEVEL3_VOLT))/(BATT_LEVEL4_ADC-BATT_LEVEL3_ADC);
+ 		batt_volt = batt_volt+BATT_LEVEL3_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL20_ADC) 
+	else if(vbatt_adc >=  BATT_LEVEL2_ADC) //3.700v ~ 3.640v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL20_ADC)*(BATT_LEVEL21_VOLT-BATT_LEVEL20_VOLT))/(BATT_LEVEL21_ADC-BATT_LEVEL20_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL20_VOLT;
+		batt_volt = ((vbatt_adc -BATT_LEVEL2_ADC)*(BATT_LEVEL3_VOLT-BATT_LEVEL2_VOLT))/(BATT_LEVEL3_ADC-BATT_LEVEL2_ADC);
+ 		batt_volt = batt_volt+BATT_LEVEL2_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL19_ADC) 
+	else if(vbatt_adc >=  BATT_LEVEL1_ADC) //3.640v ~ 3.600v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL19_ADC)*(BATT_LEVEL20_VOLT-BATT_LEVEL19_VOLT))/(BATT_LEVEL20_ADC-BATT_LEVEL19_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL19_VOLT;
+		batt_volt = ((vbatt_adc -BATT_LEVEL1_ADC)*(BATT_LEVEL2_VOLT-BATT_LEVEL1_VOLT))/(BATT_LEVEL2_ADC-BATT_LEVEL1_ADC);
+ 		batt_volt = batt_volt+BATT_LEVEL1_VOLT;
 	}
-	else if(vbatt_adc >=  BATT_LEVEL18_ADC) 
+	else if(vbatt_adc >  BATT_LOW_ADC) //3.600v ~ 3.400v
 	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL18_ADC)*(BATT_LEVEL19_VOLT-BATT_LEVEL18_VOLT))/(BATT_LEVEL19_ADC-BATT_LEVEL18_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL18_VOLT;
-	}
-		else if(vbatt_adc >=  BATT_LEVEL17_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL17_ADC)*(BATT_LEVEL18_VOLT-BATT_LEVEL17_VOLT))/(BATT_LEVEL18_ADC-BATT_LEVEL17_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL17_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL16_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL16_ADC)*(BATT_LEVEL17_VOLT-BATT_LEVEL16_VOLT))/(BATT_LEVEL17_ADC-BATT_LEVEL16_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL16_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL15_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL15_ADC)*(BATT_LEVEL16_VOLT-BATT_LEVEL15_VOLT))/(BATT_LEVEL16_ADC-BATT_LEVEL15_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL15_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL14_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL14_ADC)*(BATT_LEVEL15_VOLT-BATT_LEVEL14_VOLT))/(BATT_LEVEL15_ADC-BATT_LEVEL14_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL14_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL13_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL13_ADC)*(BATT_LEVEL14_VOLT-BATT_LEVEL13_VOLT))/(BATT_LEVEL14_ADC-BATT_LEVEL13_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL13_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL12_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL12_ADC)*(BATT_LEVEL13_VOLT-BATT_LEVEL12_VOLT))/(BATT_LEVEL13_ADC-BATT_LEVEL12_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL12_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL11_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL11_ADC)*(BATT_LEVEL12_VOLT-BATT_LEVEL11_VOLT))/(BATT_LEVEL12_ADC-BATT_LEVEL11_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL11_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL10_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL10_ADC)*(BATT_LEVEL11_VOLT-BATT_LEVEL10_VOLT))/(BATT_LEVEL11_ADC-BATT_LEVEL10_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL10_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL09_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL09_ADC)*(BATT_LEVEL10_VOLT-BATT_LEVEL09_VOLT))/(BATT_LEVEL10_ADC-BATT_LEVEL09_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL09_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL08_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL08_ADC)*(BATT_LEVEL09_VOLT-BATT_LEVEL08_VOLT))/(BATT_LEVEL09_ADC-BATT_LEVEL08_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL08_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL07_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL07_ADC)*(BATT_LEVEL08_VOLT-BATT_LEVEL07_VOLT))/(BATT_LEVEL08_ADC-BATT_LEVEL07_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL07_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL06_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL06_ADC)*(BATT_LEVEL07_VOLT-BATT_LEVEL06_VOLT))/(BATT_LEVEL07_ADC-BATT_LEVEL06_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL06_VOLT;
-	}
-			else if(vbatt_adc >=  BATT_LEVEL05_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL05_ADC)*(BATT_LEVEL06_VOLT-BATT_LEVEL05_VOLT))/(BATT_LEVEL06_ADC-BATT_LEVEL05_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL05_VOLT;
-	}
-	else if(vbatt_adc >=  BATT_LEVEL04_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL04_ADC)*(BATT_LEVEL05_VOLT-BATT_LEVEL04_VOLT))/(BATT_LEVEL05_ADC-BATT_LEVEL04_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL04_VOLT;
-	}
-	else if(vbatt_adc >=  BATT_LEVEL03_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL03_ADC)*(BATT_LEVEL04_VOLT-BATT_LEVEL03_VOLT))/(BATT_LEVEL04_ADC-BATT_LEVEL03_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL03_VOLT;
-	}
-	else if(vbatt_adc >=  BATT_LEVEL02_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL02_ADC)*(BATT_LEVEL03_VOLT-BATT_LEVEL02_VOLT))/(BATT_LEVEL03_ADC-BATT_LEVEL02_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL02_VOLT;
-	}
-	else if(vbatt_adc >=  BATT_LEVEL01_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LEVEL01_ADC)*(BATT_LEVEL02_VOLT-BATT_LEVEL01_VOLT))/(BATT_LEVEL02_ADC-BATT_LEVEL01_ADC);
- 		batt_volt = batt_volt+BATT_LEVEL01_VOLT;
-	}
-	else if(vbatt_adc >  BATT_LOW_ADC) 
-	{
-		batt_volt = ((vbatt_adc -BATT_LOW_ADC)*(BATT_LEVEL01_VOLT-BATT_LOW_VOLT))/(BATT_LEVEL01_ADC-BATT_LOW_ADC);
+		batt_volt = ((vbatt_adc -BATT_LOW_ADC)*(BATT_LEVEL1_VOLT-BATT_LOW_VOLT))/(BATT_LEVEL1_ADC-BATT_LOW_ADC);
  		batt_volt = batt_volt+BATT_LOW_VOLT;
 	}
 	else batt_volt = BATT_LOW_VOLT;
 
-	//printk("[Battery] %s : vbatt_adc %d & batt_volt %d\n", __func__, vbatt_adc, batt_volt);
+
+//printk("[Battery] %s : vbatt_adc %d & batt_volt %d\n", __func__, vbatt_adc, batt_volt);
 
 	return batt_volt;
 }
@@ -1525,6 +1318,8 @@ static void msm_batt_update(void)
 	power_supply_changed(&msm_psy_usb);
 	power_supply_changed(&msm_psy_batt);
 }
+
+
 
 // for TSP Lagging Issue : caused by Acryle	
 //extern int set_tsp_for_ta_detect(int state);
@@ -1608,7 +1403,7 @@ if(ret<0)
 else
 	second_chg_type=0;
 
-	//printk(KERN_ERR "[Battery] %s charger_type is (%d)\n", __func__, charger_type);
+	printk(KERN_ERR "[Battery] %s charger_type is (%d)\n", __func__, charger_type);
 	if( charger_type == CHARGER_TYPE_NONE || charger_type == CHARGER_TYPE_USB_PC )
 	{
 		tsp_charger_type_status = 0;
@@ -1733,7 +1528,7 @@ int CheckTemperature(int avg_temp, int oldTempInterrupt)
 
 int IsRechargingValue(int avg_level)
 {
-	if(avg_level <= BATT_RECHR_ADC)
+	if(avg_level <= 3600)
 		return 1;
 	else return 0;
 }
@@ -1760,7 +1555,7 @@ int get_charging_status(void)
 	if(event_flag & CHG_CONNECT )	gChg_connect = 1;
 	else gChg_connect = 0;
 		
-	if(event_flag & FULL_CHG_MASK ) gFull_chg = 1;
+	if (msm_batt_info.battery_level>=3660) gFull_chg = 1;
 	else gFull_chg = 0;
 		
 	if(event_flag & TIMER_MASK ) gTimer = 1;
@@ -1771,11 +1566,24 @@ int get_charging_status(void)
 
 int IsFullCharged(int avg_level)
 {
-	if( gFull_chg || gTimer )			
+//if( avg_level>=3800 )			
+	if( gFull_chg || gTimer  )			
 	{
 		//printk("[Battery] %s : Full chg !!! !!!!\n", __func__);
 		return 1;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 	else return 0;
 }
 
@@ -1848,7 +1656,10 @@ static int check_charging_status(int oldChargingState)
 						else
 						{
 							//printk("[Battery] %s :  TA full charged \n", __func__);
-							 dwChargingState=CHARGING_STATE_TA_FULL_CHARGED;
+							 
+if (msm_batt_info.battery_level>=3660){
+dwChargingState=CHARGING_STATE_TA_FULL_CHARGED;
+}
 						}
 					}
 					else 
@@ -1946,11 +1757,12 @@ static int check_charging_status(int oldChargingState)
 	}
 #endif	
 
-	//printk("[Battery] Currnet Charging state [%x, %x]  Batt Level [%d] Percent [%d]\n", dwChargingState, msm_batt_info.battery_Celsius, msm_batt_info.battery_level, msm_batt_info.batt_capacity);
+	printk("[Battery] Currnet Charging state [%x, %x]  Batt Level [%d] Percent [%d]\n",dwChargingState,msm_batt_info.battery_Celsius,msm_batt_info.battery_level,msm_batt_info.batt_capacity);
 	
+
 	if(oldChargingState!= dwChargingState)
 	{
-		printk("[Battery] Charging state is changed [%x]=>[%x]   Batt Level [%d]   Percent [%d]\n", oldChargingState, dwChargingState, msm_batt_info.battery_level, msm_batt_info.batt_capacity);
+		//printk("[Battery] Charging state is changed [%x]=>[%x]   Batt Level [%d]   Percent [%d]\n", oldChargingState, dwChargingState, msm_batt_info.battery_level, msm_batt_info.batt_capacity);
 	
 		switch(dwChargingState)
 			{
@@ -1962,10 +1774,12 @@ static int check_charging_status(int oldChargingState)
 				break;
 				
 			case CHARGING_STATE_ABNORMAL_BATTERY:
+if (msm_batt_info.battery_level>=3800){
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_DISCHARGING;
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_DEAD;				
 				msm_batt_info.charger_status = CHARGER_STATUS_INVALID;				
 				charging_control(SMEM_PROC_COMM_CHARGING_OFF);
+}
 				break;
 				
 			case CHARGING_STATE_USB_CHARGING:
@@ -1976,30 +1790,39 @@ static int check_charging_status(int oldChargingState)
 				break;
 				
 			case CHARGING_STATE_TA_HIGH_TEMPERATURE:
+				if (msm_batt_info.battery_level>=3800){
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_NOT_CHARGING;
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_OVERHEAT;				
 				msm_batt_info.charger_status = CHARGER_STATUS_GOOD;				
 				charging_control(SMEM_PROC_COMM_CHARGING_OFF);
+}
 				break;
 				
 			case CHARGING_STATE_TA_LOW_TEMPERATURE:
+if (msm_batt_info.battery_level>=3800){
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_NOT_CHARGING;
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_COLD;				
 				msm_batt_info.charger_status = CHARGER_STATUS_GOOD;				
 				charging_control(SMEM_PROC_COMM_CHARGING_OFF);
+}
 				break;	
 				
 			case CHARGING_STATE_TA_FULL_CHARGED:
+
+				if (msm_batt_info.battery_level>=3660){
 				msm_batt_info.batt_capacity = 100;	
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_FULL;
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_GOOD;				
 				msm_batt_info.charger_status = CHARGER_STATUS_GOOD;	
 				charging_control(SMEM_PROC_COMM_CHARGING_OFF);
+}
 				break;
 				
 			case CHARGING_STATE_TA_FULL_RECHARGING:
+				if (msm_batt_info.battery_level<=3600){
 				msm_batt_info.batt_capacity = 100;	
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_FULL;
+}
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_GOOD;				
 				msm_batt_info.charger_status = CHARGER_STATUS_GOOD;	
 				charging_control(SMEM_PROC_COMM_CHARGING_ON_TA);
@@ -2013,15 +1836,20 @@ static int check_charging_status(int oldChargingState)
 				break;
 				
 			case CHARGING_STATE_TA_TIMEOVER_CHARGED:
+
+//if (msm_batt_info.battery_level>=3665){
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_FULL;
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_GOOD;				
 				msm_batt_info.charger_status = CHARGER_STATUS_GOOD;
 				charging_control(SMEM_PROC_COMM_CHARGING_OFF);
+//}
 				break;
 				
 			case CHARGING_STATE_USB_FULL_RECHARGING:
+if (msm_batt_info.battery_level<=3600){
 				msm_batt_info.batt_capacity = 100;	
 				msm_batt_info.batt_status = POWER_SUPPLY_STATUS_FULL;
+}
 				msm_batt_info.batt_health = POWER_SUPPLY_HEALTH_GOOD;				
 				msm_batt_info.charger_status = CHARGER_STATUS_GOOD;	
 				charging_control(SMEM_PROC_COMM_CHARGING_ON_USB);
@@ -2037,11 +1865,12 @@ static int check_charging_status(int oldChargingState)
 			}
 	}
 
-	if(gTimeover_start)
+	if( gTimeover_start)
 	{
 		msm_batt_info.batt_status = POWER_SUPPLY_STATUS_FULL;
 		msm_batt_info.batt_capacity = 100;	
 		//printk("[Battery] %s : Timer over charging 100\n", __func__);
+
 	}
 
 	spin_unlock(&msm_batt_info.lock);
@@ -2187,22 +2016,24 @@ static int get_batt_info(void)
 	//printk("[Battery] %s : After Temp ADC Value =%d \n", __func__, msm_batt_info.battery_temp);
 
  	//Calculate Voltage & Capacity from Battery Average Voltage ADC
+
+//voltaje=msm_batt_info.battery_level;
 	msm_batt_info.battery_voltage = calculate_batt_voltage(msm_batt_info.battery_level);
 	msm_batt_info.batt_capacity = calculate_batt_level(msm_batt_info.battery_voltage);
 
 	msm_batt_info.charger_status = CHARGER_STATUS_GOOD; // temp
 // hsil
 //	spin_unlock(&msm_batt_info.lock);
-/*
-	printk("[Battery] %s : charger_status = %s, charger_type = %s,"
+
+	/*printk("[Battery] %s : charger_status = %s, charger_type = %s,"
 		" batt_volt = %d,batt_level = %d, batt_temp = %d, CHG: %d FUll : %d TIME : %d \n", __func__, 
 		charger_status[msm_batt_info.charger_status],
 		charger_type[msm_batt_info.charger_type],
 		msm_batt_info.battery_voltage,
 		msm_batt_info.batt_capacity,
 		msm_batt_info.battery_temp,
-		gChg_connect,gFull_chg,gTimer);
-*/
+		gChg_connect,gFull_chg,gTimer);*/
+
 	return 0;
 }
 
@@ -2341,7 +2172,7 @@ static int msm_batt_get_batt_chg_status_v1(void)
 		rep_batt_chg.battery_temp =
 			be32_to_cpu(rep_batt_chg.battery_temp);
 
-		printk(KERN_INFO "charger_status = %s, charger_type = %s,"
+		/*printk(KERN_INFO "charger_status = %s, charger_type = %s,"
 				" batt_status = %s, batt_level = %s,"
 				" batt_volt = %u, batt_temp = %u,\n",
 				charger_status[rep_batt_chg.charger_status],
@@ -2349,7 +2180,7 @@ static int msm_batt_get_batt_chg_status_v1(void)
 				battery_status[rep_batt_chg.battery_status],
 				battery_level[rep_batt_chg.battery_level],
 				rep_batt_chg.battery_voltage,
-				rep_batt_chg.battery_temp);
+				rep_batt_chg.battery_temp);*/
 
 	} else {
 		printk(KERN_INFO "%s():No more data in batt_chg rpc reply\n",
@@ -2364,7 +2195,7 @@ static void msm_batt_update_psy_status_v1(void)
 {
 	msm_batt_get_batt_chg_status_v1();
 
-	if (msm_batt_info.charger_status == rep_batt_chg.charger_status &&
+	/*if (msm_batt_info.charger_status == rep_batt_chg.charger_status &&
 		msm_batt_info.charger_type == rep_batt_chg.charger_type &&
 		msm_batt_info.battery_status ==  rep_batt_chg.battery_status &&
 		msm_batt_info.battery_level ==  rep_batt_chg.battery_level &&
@@ -2376,7 +2207,7 @@ static void msm_batt_update_psy_status_v1(void)
 			"charger status\n", __func__);
 		return;
 	}
-
+*/
 	msm_batt_info.battery_voltage  	= 	rep_batt_chg.battery_voltage;
 	msm_batt_info.battery_temp 	=	rep_batt_chg.battery_temp;
 
@@ -3149,19 +2980,18 @@ static int msm_batt_send_event(u32 type_of_event)
 	spin_lock_irqsave(&msm_batt_info.lock, flags);
 
 
-	if (type_of_event & SUSPEND_EVENT) {}
-		//printk(KERN_INFO "%s() : Suspend event ocurred."
-			//	"events = %08x\n", __func__, type_of_event);
-	else if (type_of_event & RESUME_EVENT) {}
-		//printk(KERN_INFO "%s() : Resume event ocurred."
-		//		"events = %08x\n", __func__, type_of_event);
-	else if (type_of_event & CLEANUP_EVENT) {}
-		//printk(KERN_INFO "%s() : Cleanup event ocurred."
-		//		"events = %08x\n", __func__, type_of_event);
-	else 
-	{
-		//printk(KERN_ERR "%s() : Unknown event ocurred."
-		//		"events = %08x\n", __func__, type_of_event);
+	if (type_of_event & SUSPEND_EVENT)
+		printk(KERN_INFO "%s() : Suspend event ocurred."
+				"events = %08x\n", __func__, type_of_event);
+	else if (type_of_event & RESUME_EVENT)
+		printk(KERN_INFO "%s() : Resume event ocurred."
+				"events = %08x\n", __func__, type_of_event);
+	else if (type_of_event & CLEANUP_EVENT)
+		printk(KERN_INFO "%s() : Cleanup event ocurred."
+				"events = %08x\n", __func__, type_of_event);
+	else {
+		printk(KERN_ERR "%s() : Unknown event ocurred."
+				"events = %08x\n", __func__, type_of_event);
 
 		spin_unlock_irqrestore(&msm_batt_info.lock, flags);
 		return -EIO;
@@ -3195,8 +3025,8 @@ static int msm_batt_send_event(u32 type_of_event)
 
 		atomic_set(&msm_batt_info.event_handled, 0);
 	} else {
-		//printk(KERN_INFO "%s(): Battery call Back thread not Started.",
-		//		__func__);
+		printk(KERN_INFO "%s(): Battery call Back thread not Started.",
+				__func__);
 
 		atomic_set(&msm_batt_info.handle_event, 1);
 		spin_unlock_irqrestore(&msm_batt_info.lock, flags);
@@ -3278,24 +3108,24 @@ void msm_batt_early_suspend(struct early_suspend *h)
 {
 	int rc;
 
-	//printk(KERN_INFO "%s(): going to early suspend\n", __func__);
+	printk(KERN_INFO "%s(): going to early suspend\n", __func__);
 
 	rc = msm_batt_send_event(SUSPEND_EVENT);
 
-	//printk(KERN_INFO "%s(): Handled early suspend event."
-	 //      " rc = %d\n", __func__, rc);
+	printk(KERN_INFO "%s(): Handled early suspend event."
+	       " rc = %d\n", __func__, rc);
 }
 
 void msm_batt_late_resume(struct early_suspend *h)
 {
 	int rc;
 
-	//printk(KERN_INFO "%s(): going to resume\n", __func__);
+	printk(KERN_INFO "%s(): going to resume\n", __func__);
 
 	rc = msm_batt_send_event(RESUME_EVENT);
 
-	//printk(KERN_INFO "%s(): Handled Late resume event."
-	//       " rc = %d\n", __func__, rc);
+	printk(KERN_INFO "%s(): Handled Late resume event."
+	       " rc = %d\n", __func__, rc);
 }
 #endif
 

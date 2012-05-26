@@ -52,7 +52,7 @@ scm_version()
 			# If only the short version is requested, don't bother
 			# running further git commands
 			if $short; then
-				echo "+"
+				echo ""
 				return
 			fi
 			# If we are past a tagged commit (like
@@ -96,9 +96,9 @@ scm_version()
 
 		# Are there uncommitted changes?
 		# These are represented by + after the changeset id.
-		case "$hgid" in
-			*+|*+\ *) printf '%s' -dirty ;;
-		esac
+		#case "$hgid" in
+		#	*+|+*\ *) printf '%s' -dirty ;;
+		#esac
 
 		# All done with mercurial
 		return

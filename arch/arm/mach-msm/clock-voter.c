@@ -125,9 +125,9 @@ static void voter_clk_disable(unsigned id)
 	unsigned cur_rate, new_rate;
 
 	spin_lock_irqsave(&voter_clk_lock, flags);
-	if (WARN_ON(clk->count == 0))
-		goto out;
-	clk->count--;
+	//if (WARN_ON(clk->count == 0))
+	//	goto out;
+	//clk->count--;
 	if (clk->count == 0) {
 		struct clk *parent = clk->aggregator_clk;
 

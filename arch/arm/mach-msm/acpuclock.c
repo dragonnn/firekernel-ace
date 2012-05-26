@@ -240,9 +240,9 @@ static struct clkctl_acpu_speed pll0_960_pll1_245_pll2_800[] = {
 	{ 1, 480000, ACPU_PLL_0, 4, 1, 160000, 2, 5, 122880 },
 	{ 1, 614400, ACPU_PLL_2, 2, 0, 153600, 3, 6, 122880 },
 	{ 1, 672000, ACPU_PLL_2, 2, 0, 168000, 3, 6, 122880 },
-	{ 1, 729600, ACPU_PLL_2, 2, 0, 182400, 3, 7, 122880 },
-	{ 1, 768000, ACPU_PLL_2, 2, 0, 192000, 3, 7, 122880 },
-	{ 1, 800000, ACPU_PLL_2, 2, 0, 200000, 3, 7, 122880 },
+	{ 1, 729600, ACPU_PLL_2, 2, 0, 400000, 3, 7, 200000 },
+	{ 1, 768000, ACPU_PLL_2, 2, 0, 400000, 3, 7, 200000 },
+	{ 1, 800000, ACPU_PLL_2, 2, 0, 400000, 3, 7, 200000 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0}, {0, 0, 0} }
 };
 
@@ -790,7 +790,7 @@ static void __init acpu_freq_tbl_fixup(void)
 	}
 
 	t--;
-	drv_state.max_axi_khz = t->axiclk_khz;
+	drv_state.max_axi_khz = 422400;
 
 	/* The default 7x27 ACPU clock plan supports running the AXI bus at
 	 * 200 MHz. So we don't classify it as Turbo mode.
