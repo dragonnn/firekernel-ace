@@ -1,7 +1,7 @@
 /*
  * Automatically generated C config: don't edit
  * Linux kernel version: 2.6.35.7
- * Sat May 26 21:14:56 2012
+ * Sun May 27 18:08:44 2012
  */
 #define AUTOCONF_INCLUDED
 #define CONFIG_RING_BUFFER 1
@@ -362,6 +362,7 @@
 #define CONFIG_SIGNALFD 1
 #define CONFIG_EXT4_FS 1
 #define CONFIG_CRYPTO_SHA1 1
+#define CONFIG_ARM_DMA_MEM_BUFFERABLE 1
 #define CONFIG_LIBRA_SDIOIF_MODULE 1
 #define CONFIG_LOCKD_V4 1
 #define CONFIG_DUMMY 1

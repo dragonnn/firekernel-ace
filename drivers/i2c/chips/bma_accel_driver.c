@@ -1213,11 +1213,12 @@ error_device:
 err_input_register_device_light:
 	input_unregister_device(g_bma222->acc_input_dev);
 err_input_allocate_device_light:	
-kfree_exit:
-	destroy_workqueue(g_bma222->wq);
-	kfree(data);
+
 err_create_workqueue:
+	destroy_workqueue(g_bma222->wq);
 	mutex_destroy(&data->power_lock);
+kfree_exit:
+	kfree(data);
 exit:
 	return err;
 }

@@ -247,10 +247,10 @@ static void report_key(struct gpio_kp *kp, int key_index, int out, int in)
 					TSP_forced_release_forkey();
 #endif
 #if defined(CONFIG_MACH_CALLISTO)  || defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_LUCAS)
-#ifdef CONFIG_KERNEL_DEBUG_SEC
-				printk("key event (keycode:%d, pressed:%d), w=%d\n", 
-						keycode, pressed, lcd_on_state_for_debug);	// sec: sm.kim
-#endif
+//#ifdef CONFIG_KERNEL_DEBUG_SEC
+//				printk("key event (keycode:%d, pressed:%d), w=%d\n", 
+//						keycode, pressed, lcd_on_state_for_debug);	// sec: sm.kim
+//#endif
 
 #ifdef ATH_CLAIM_RELEASE_WAR
 				if(!lcd_on_state_for_debug) 
@@ -389,13 +389,13 @@ static irqreturn_t gpiokey_irq_handler(int irq_in, void *dev_id)
 		if(key_status == 0) // 0 : press
 		{
 			input_report_key(kp->input_devs->dev[dev], KEY_END, 1);
-			printk("key event (keycode:%d, pressed:%d)\n", KEY_END, 1);	//sec: sm.kim
+//			printk("key event (keycode:%d, pressed:%d)\n", KEY_END, 1);	//sec: sm.kim
 			key_pressed = 1;
 		}
 		else if (key_status == 1) // 1 : release
 		{
 			input_report_key(kp->input_devs->dev[dev], KEY_END, 0);
-			printk("key event (keycode:%d, pressed:%d)\n", KEY_END, 0); //sec: sm.kim
+//			printk("key event (keycode:%d, pressed:%d)\n", KEY_END, 0); //sec: sm.kim
 			key_pressed = 0;
 #if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS)
 			TSP_forced_release_forkey();

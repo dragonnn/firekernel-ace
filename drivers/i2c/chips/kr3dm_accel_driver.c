@@ -37,6 +37,8 @@ STMICROELECTRONICS ASSUMES NO RESPONSIBILITY FOR THE CONSEQUENCES OF USE
 OF SUCH INFORMATION.
 SPECIFICATIONS MENTIONED IN THIS PUBLICATION ARE SUBJECT TO CHANGE WITHOUT NOTICE.
 THIS PUBLICATION SUPERSEDES AND REPLACES ALL INFORMATION PREVIOUSLY SUPPLIED.
+STMICROELECTRONICS PRODUCTS ARE NOT AUTHORIZED FOR USE AS CRITICAL COMPONENTS IN LIFE
+SUPPORT DEVICES OR SYSTEMS WITHOUT EXPRESS WRITTEN APPROVAL OF STMICROELECTRONICS.
 
 STMicroelectronics GROUP OF COMPANIES
 
@@ -875,11 +877,11 @@ err_input_register_device_light:
 	input_unregister_device(g_kr3dm->acc_input_dev);
 err_input_allocate_device_light:	
 
-exit_kfree:
-	destroy_workqueue(g_kr3dm->wq);
-	kfree(data);
 err_create_workqueue:
+	destroy_workqueue(g_kr3dm->wq);
 	mutex_destroy(&data->power_lock);	
+exit_kfree:
+	kfree(data);
 exit:
 	return err;
 }
