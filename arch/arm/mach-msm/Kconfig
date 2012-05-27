@@ -1368,3 +1368,13 @@ config BT_MSM_PINTEST
 	  This driver provides support for verifying the MSM to BT pin
 	  connectivity.
 endif
+
+config MSM_CPU_FREQ_OVERCLOCK
+	bool "Enable OC for MSM"
+	default n
+
+config MSM_CPU_FREQ_OVERCLOCK_AHB
+	bool "For really OC"
+	default n
+	depends on MSM_CPU_FREQ_OVERCLOCK
+
