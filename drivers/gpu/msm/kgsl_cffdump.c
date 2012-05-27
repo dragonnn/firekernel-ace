@@ -270,7 +270,7 @@ void kgsl_cffdump_init()
 	cpumask_t mask;
 
 	cpumask_clear(&mask);
-	cpumask_set_cpu(0, &mask);
+	cpumask_set_cpu(1, &mask);
 	sched_setaffinity(0, &mask);
 #endif
 	kgsl_cff_dump_enable = 1;
