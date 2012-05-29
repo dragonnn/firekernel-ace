@@ -581,7 +581,7 @@ static ssize_t store_cpu_gov(struct device *d,
 	else if (value == 0)
 	{
 		printk("[HSIL] %s(%d)\n", __func__, __LINE__);
-		cpufreq_direct_set_policy(0, "ondemand");
+		cpufreq_direct_set_policy(0, "smartassV2");
 	}
 	else
 		printk("[HSIL] %s : No format\n", __func__);
