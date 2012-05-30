@@ -32,7 +32,7 @@
 
 #define dprintk(msg...) cpufreq_debug_printk(CPUFREQ_DEBUG_CORE, \
 						"cpufreq-core", msg)
-#define max_screenoff_frequency 245760
+#define max_screenoff_frequency 320000
 
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
@@ -2093,7 +2093,7 @@ for_each_online_cpu(cpu) {
 			__func__, cpu, new_policy.min, new_policy.max);
 			__cpufreq_set_policy(cpu_policy, &new_policy);
 			cpu_policy->user_policy.policy = cpu_policy->policy;
-			cpu_policy->user_policy.governor = cpu_policy->governor;
+			//cpu_policy->user_policy.governor = cpu_policy->governor;
 			out:
 			cpufreq_cpu_put(cpu_policy);
 	}
@@ -2118,7 +2118,7 @@ int cpu;
 				__func__, cpu, new_policy.min, new_policy.max);
 				__cpufreq_set_policy(cpu_policy, &new_policy);
 				cpu_policy->user_policy.policy = cpu_policy->policy;
-				cpu_policy->user_policy.governor = cpu_policy->governor;
+				//cpu_policy->user_policy.governor = cpu_policy->governor;
 				out:
 			cpufreq_cpu_put(cpu_policy);
 	}
@@ -2132,7 +2132,6 @@ static struct early_suspend _powersave_early_suspend = {
 static int __init cpufreq_core_init(void)
 {
 	int cpu;
-
 	for_each_possible_cpu(cpu) {
 		per_cpu(cpufreq_policy_cpu, cpu) = -1;
 		init_rwsem(&per_cpu(cpu_policy_rwsem, cpu));
@@ -2142,7 +2141,6 @@ static int __init cpufreq_core_init(void)
 						&cpu_sysdev_class.kset.kobj);
 	BUG_ON(!cpufreq_global_kobject);
 	register_early_suspend(&_powersave_early_suspend);
-
 	return 0;
 }
 core_initcall(cpufreq_core_init);
