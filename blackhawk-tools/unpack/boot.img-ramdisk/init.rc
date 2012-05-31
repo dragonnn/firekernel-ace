@@ -68,17 +68,12 @@ loglevel 3
     mkdir /sd-ext 0771 system system
 
     write /proc/sys/kernel/panic_on_oops 1
-    write /proc/sys/kernel/hung_task_timeout_secs 30
+    write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
-    write /proc/sys/kernel/sched_latency_ns 18000000
-    write /proc/sys/kernel/sched_min_granularity_ns 1500000
-    write /proc/sys/kernel/sched_wakeup_granularity_ns 3000000
+    write /proc/sys/kernel/sched_latency_ns 10000000
+    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
-    write /proc/sys/kernel/sched_shares_ratelimit 256000
-    write /proc/sys/kernel/sched_features 24180
-    write /proc/sys/kernel/random/write_wakeup_threshold 256
-    write /proc/sys/kernel/random/read_wakeup_threshold 128
 
 # Create cgroup mount points for process groups
     mkdir /dev/cpuctl
@@ -168,7 +163,7 @@ on post-fs
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0771 shell shell
+    mkdir /data/local 0751 root root
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/local/download 0771 system cache
     mkdir /data/data 0771 system system
@@ -196,9 +191,6 @@ on post-fs
     chmod 0770 /data/lost+found
     chown root root /cache/lost+found
     chmod 0770 /cache/lost+found
-    
-    # create directory for DRM plug-ins
-    mkdir /data/drm 0774 drm drm
 
     # allow net_raw to have access to /dev/socket directory
     chown root net_raw /dev/socket
@@ -259,35 +251,8 @@ on boot
     write /proc/1/oom_adj -16
 
     # Tweak background writeout
-    write /proc/sys/vm/dirty_ratio 90
-    write /proc/sys/vm/dirty_expire_centisecs 1000
-    write /proc/sys/vm/dirty_writeback_centisecs 2000
-    write /proc/sys/vm/dirty_background_ratio  75
-    write /proc/sys/vm/oom_kill_allocating_task 0
-    write /proc/sys/vm/overcommit_memory 1
-    write /proc/sys/vm/page-cluster 3
-    write /proc/sys/vm/drop_caches 3
-    write /proc/sys/vm/min_free_kbytes 4096
-    write /proc/sys/vm/panic_on_oom 0
-    write /proc/sys/vm/vfs_cache_pressure 10
-    write /proc/sys/vm/min_free_order_shift 4
-    
-    
-    # Tweaks
-    write /proc/sys/vm/laptop_mode 0
-    write /proc/sys/vm/block_dump 0
-    write /proc/sys/kernel/msgmni 2048
-    write /proc/sys/kernel/msgmax 64000
-    write /proc/sys/kernel/shmmni 4096
-    write /proc/sys/kernel/shmall 2097152
-    write /proc/sys/kernel/shmmax 268435456
-    write /proc/sys/fs/inotify/max_queued_events 32000
-    write /proc/sys/fs/inotify/max_user_instances 256
-    write /proc/sys/fs/inotify/max_user_watches 1024
-    write /proc/sys/fs/lease-break-time 10
-    write /proc/sys/fs/file-max 165164
-    write /proc/sys/fs/nr_open 1053696
-    
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
 
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state
@@ -335,57 +300,6 @@ on boot
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-    
-# TCP Tweaks
-    write /proc/sys/net/core/wmem_max 524288
-    write /proc/sys/net/core/rmem_max 524288
-    write /proc/sys/net/core/rmem_default 262144
-    write /proc/sys/net/core/wmem_default 262144
-    write /proc/sys/net/core/optmem_max 20480
-    write /proc/sys/net/unix/max_dgram_qlen 50
-    write /proc/sys/net/ipv4/tcp_keepalive_time 900
-    write /proc/sys/net/ipv4/tcp_keepalive_probes 5
-    write /proc/sys/net/ipv4/tcp_keepalive_intvl 156
-    write /proc/sys/net/ipv4/tcp_timestamps 0
-    write /proc/sys/net/ipv4/tcp_sack 1
-    write /proc/sys/net/ipv4/tcp_fack 1
-    write /proc/sys/net/ipv4/tcp_window_scaling 1
-    write /proc/sys/net/ipv4/tcp_tw_recycle 1
-    write /proc/sys/net/ipv4/tcp_tw_reuse 1
-    write /proc/sys/net/ipv4/tcp_congestion_control cubic
-    write /proc/sys/net/ipv4/tcp_syncookies 1
-    write /proc/sys/net/ipv4/conf/all/rp_filter 1
-    write /proc/sys/net/ipv4/conf/default/rp_filter 1
-    write /proc/sys/net/ipv4/tcp_synack_retries 2
-    write /proc/sys/net/ipv4/tcp_syn_retries 2
-    write /proc/sys/net/ipv4/tcp_max_syn_backlog 1024
-    write /proc/sys/net/ipv4/tcp_max_tw_buckets 16384
-    write /proc/sys/net/ipv4/icmp_echo_ignore_all 1
-    write /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses 1
-    write /proc/sys/net/ipv4/tcp_no_metrics_save 1
-    write /proc/sys/net/ipv4/tcp_fin_timeout 15
-    write /proc/sys/net/ipv4/tcp_keepalive_intvl 30
-    write /proc/sys/net/ipv4/tcp_keepalive_probes 5
-    write /proc/sys/net/ipv4/tcp_keepalive_time 1800
-    write /proc/sys/net/ipv4/ip_forward 0
-    write /proc/sys/net/ipv4/conf/default/accept_source_route 0
-    write /proc/sys/net/ipv4/conf/all/accept_source_route 0
-    write /proc/sys/net/ipv4/conf/all/accept_redirects 0
-    write /proc/sys/net/ipv4/conf/default/accept_redirects 0
-    write /proc/sys/net/ipv4/conf/all/secure_redirects 0
-    write /proc/sys/net/ipv4/conf/default/secure_redirects 0
-    write /proc/sys/net/ipv4/udp_rmem_min 6144
-    write /proc/sys/net/ipv4/udp_wmem_min 6144
-    write /proc/sys/net/ipv4/tcp_rfc1337 1
-    write /proc/sys/net/ipv4/ip_no_pmtu_disc 0
-    write /proc/sys/net/ipv4/tcp_ecn 0
-    write /proc/sys/net/ipv4/route/flush 1
-    write /proc/sys/net/ipv4/tcp_rmem 6144 87380 524288
-    write /proc/sys/net/ipv4/tcp_wmem 6144 87380 524288
-    write /proc/sys/net/ipv6/conf/default/use_tempaddr 2
-    write /proc/sys/net/ipv6/conf/all/use_tempaddr 2
-    write /proc/sys/net/ipv6/conf/all/temp_prefered_lft 3600
-    write /proc/sys/net/ipv6/conf/default/temp_prefered_lft 3600
 
 # Include extra init file
     import /system/etc/init.local.rc
@@ -423,12 +337,17 @@ on property:persist.service.adb.enable=1
 on property:persist.service.adb.enable=0
     stop adbd
 
+on property:service.adb.tcp.port=5555
+    restart adbd
+
+on property:service.adb.tcp.port=-1
+    restart adbd
+
 service servicemanager /system/bin/servicemanager
     user system
     critical
     onrestart restart zygote
     onrestart restart media
-    onrestart restart drm
 
 service vold /system/bin/vold
     socket vold stream 0660 root mount
@@ -444,16 +363,14 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_rw net_admin net_raw
+    group radio cache inet misc audio sdcard_rw net_admin net_raw qcom_oncrpc diag
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
-    socket zygote stream 666
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
-    
-service drm /system/bin/drmserver
 
 service media /system/bin/mediaserver
     user media
@@ -498,6 +415,12 @@ service opush /system/bin/sdptool add --channel=12 OPUSH
     oneshot
 
 service pbap /system/bin/sdptool add --channel=19 PBAP
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service map /system/bin/sdptool add --channel=16 MAS
     user bluetooth
     group bluetooth net_bt_admin
     disabled
