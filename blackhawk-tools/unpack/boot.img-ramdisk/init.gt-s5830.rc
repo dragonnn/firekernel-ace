@@ -1,18 +1,13 @@
 on init
     insmod /lib/modules/fsr.ko
     insmod /lib/modules/fsr_stl.ko
-    insmod /lib/modules/rfs_glue.ko
-    insmod /lib/modules/rfs_fat.ko
     insmod /lib/modules/sec_param.ko
     insmod /lib/modules/reset_modem.ko
 
 on fs
     mount ext4 /dev/block/stl12 /system ro wait noload noatime nodiratime noauto_da_alloc
-    mount rfs /dev/block/stl12 /system ro check=no noatime nodiratime
     mount ext4 /dev/block/stl13 /data wait nosuid nodev noatime nodiratime noauto_da_alloc
-    mount rfs /dev/block/stl13 /data nosuid nodev check=no noatime nodiratime
     mount ext4 /dev/block/stl14 /cache wait noload nosuid nodev noatime nodiratime noauto_da_alloc
-    mount rfs /dev/block/stl14 /cache nosuid nodev check=no noatime nodiratime
 
     chown radio /dev/bml7
     chown radio /dev/bml10
@@ -26,11 +21,6 @@ on fs
     write /sys/devices/virtual/block/stl14/queue/read_ahead_kb 4
 
 on boot
-# cpufreq configurations
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 95
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/down_differential 3
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 50000
     
 # brightness
     write /sys/class/leds/button-backlight/brightness 1

@@ -50,7 +50,7 @@
 
 #ifdef CONFIG_FB_MSM_LOGO
 #define INIT_IMAGE_FILE "/initlogo.rle"
-extern int load_565rle_image(char *filename);
+extern int load_565rle_image(char *filename, int start_x, int start_y);
 #ifdef CONFIG_FB_MSM_SEC_BOOTLOGO
 extern int load_565rle_image_onfb( char *filename, int start_x, int start_y);
 #endif
@@ -63,7 +63,7 @@ static int fbram_size;
 static struct platform_device *pdev_list[MSM_FB_MAX_DEV_LIST];
 static int pdev_list_cnt;
 
-int vsync_mode = 1;
+int vsync_mode = 0;
 
 #define MAX_BLIT_REQ 256
 

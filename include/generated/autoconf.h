@@ -1,7 +1,7 @@
 /*
  * Automatically generated C config: don't edit
  * Linux kernel version: 2.6.35.7
- * Tue May 29 20:11:58 2012
+ * Thu May 31 14:44:18 2012
  */
 #define AUTOCONF_INCLUDED
 #define CONFIG_RING_BUFFER 1
@@ -476,7 +476,7 @@
 #define CONFIG_FSA9280 1
 #define CONFIG_DEBUG_KERNEL 1
 #define CONFIG_COMPAT_BRK 1
-#define CONFIG_LOCALVERSION "-perf-CL562111"
+#define CONFIG_LOCALVERSION "-perf-CL882825"
 #define CONFIG_CRYPTO 1
 #define CONFIG_DEFAULT_MMAP_MIN_ADDR 4096
 #define CONFIG_IP_NF_IPTABLES 1
