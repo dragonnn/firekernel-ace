@@ -2093,7 +2093,7 @@ for_each_online_cpu(cpu) {
 			__func__, cpu, new_policy.min, new_policy.max);
 			__cpufreq_set_policy(cpu_policy, &new_policy);
 			cpu_policy->user_policy.policy = cpu_policy->policy;
-			//cpu_policy->user_policy.governor = cpu_policy->governor;
+			cpu_policy->user_policy.governor = cpu_policy->governor;
 			out:
 			cpufreq_cpu_put(cpu_policy);
 	}
@@ -2118,7 +2118,7 @@ int cpu;
 				__func__, cpu, new_policy.min, new_policy.max);
 				__cpufreq_set_policy(cpu_policy, &new_policy);
 				cpu_policy->user_policy.policy = cpu_policy->policy;
-				//cpu_policy->user_policy.governor = cpu_policy->governor;
+				cpu_policy->user_policy.governor = cpu_policy->governor;
 				out:
 			cpufreq_cpu_put(cpu_policy);
 	}
