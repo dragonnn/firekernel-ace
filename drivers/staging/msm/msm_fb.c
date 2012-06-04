@@ -74,7 +74,7 @@ static int fbram_size;
 static struct platform_device *pdev_list[MSM_FB_MAX_DEV_LIST];
 static int pdev_list_cnt;
 
-int vsync_mode = 1;
+int vsync_mode = 0;
 
 #define MAX_FBI_LIST 32
 static struct fb_info *fbi_list[MAX_FBI_LIST];
@@ -975,7 +975,7 @@ static int msm_fb_register(struct msm_fb_data_type *mfd)
 	     mfd->index, fbi->var.xres, fbi->var.yres, fbi->fix.smem_len);
 
 #ifdef CONFIG_FB_MSM_LOGO
-	if (!load_565rle_image(INIT_IMAGE_FILE)) ;	/* Flip buffer */
+	if (!load_565rle_image(INIT_IMAGE_FILE,0,0)) ;	/* Flip buffer */
 #endif
 	ret = 0;
 
