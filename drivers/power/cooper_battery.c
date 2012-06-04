@@ -132,7 +132,7 @@
 #define CLEANUP_EVENT		(1UL << 2)
 
 #ifdef MAX8899_CHARGER
-#define BATT_CHECK_INTERVAL	( 3 * HZ ) // every 10 sec
+#define BATT_CHECK_INTERVAL	( 1 * HZ ) // every 10 sec
 
 // proc comm re-definition
 #define SMEM_PROC_COMM_CHARGING_INFO	PCOM_OEM_CHARGING_INFO
@@ -1038,7 +1038,7 @@ extern int fsa9280_i2c_write(unsigned char u_addr, unsigned char u_data);
 #define BATT_FULL_VOLT		4200
 #define BATT_RECHAR_VOLT	4140
 
-#define BATT_LOW_ADC		2200
+#define BATT_LOW_ADC		2115
 #define BATT_LEVEL1_ADC	2606
 #define BATT_LEVEL2_ADC	2838
 #define BATT_LEVEL3_ADC	2908
@@ -1895,6 +1895,7 @@ int GetAverageSample(int modified_sample){
 		//printk("[Battery] %s :Battery: Total_voltage =%d \n", __func__, dwTotal);
 		//printk("[Battery] %s :Battery: AverageSample =%d \n", __func__, AverageSample);
 		uCount +=1;
+		msleep(1000);
 	}
 	else
 	{	
@@ -2010,8 +2011,8 @@ static int get_batt_info(void)
 #endif
 
 	//Calculate Average Sample
-	//msm_batt_info.battery_level = GetAverageSample(msm_batt_info.battery_level);
-
+	msm_batt_info.battery_level = GetAverageSample(msm_batt_info.battery_level);
+msm_batt_info.battery_level=(msm_batt_info.battery_pre_level+msm_batt_info.battery_level)/2;
 	//printk("[Battery] %s : After Vol    ADC Value =%d \n", __func__, msm_batt_info.battery_level);
 	//printk("[Battery] %s : After Temp ADC Value =%d \n", __func__, msm_batt_info.battery_temp);
 
@@ -2098,6 +2099,7 @@ static int msm_batt_suspend(struct platform_device *pdev,
 	//printk(KERN_ERR "[Battery] %s\n", __func__);
 
 	batt_deregistertimer(&msm_batt_info.timer);
+	batt_registertimer(&msm_batt_info.timer, BATT_CHECK_INTERVAL*60);
 	return 0;
 }
 
@@ -2106,7 +2108,7 @@ static int msm_batt_resume(struct platform_device *pdev)
 	printk(KERN_ERR "[Battery] %s\n", __func__);
 
 	queue_work(msm_batt_info.msm_batt_wq, &msm_batt_work);
-	
+	batt_deregistertimer(&msm_batt_info.timer);
 	batt_registertimer(&msm_batt_info.timer, BATT_CHECK_INTERVAL);
 	return 0;
 }
@@ -2644,7 +2646,7 @@ static int  msm_batt_handle_suspend(void)
 
 		rc = msm_batt_modify_client(msm_batt_info.batt_handle,
 				BATTERY_LOW, BATTERY_VOLTAGE_BELOW_THIS_LEVEL,
-				BATTERY_CB_ID_LOW_VOL, BATTERY_LOW);
+				BATTERY_CB_ID_ALL_ACTIV, BATTERY_ALL_ACTIVITY);
 
 		if (rc < 0) {
 			printk(KERN_ERR
@@ -2961,8 +2963,11 @@ static void msm_batt_wait_for_batt_chg_event(struct work_struct *work)
 
 		printk(KERN_INFO "%s: Update Batt status.\n", __func__);
 
-		if (msm_batt_info.chg_api_version >= CHARGER_API_VERSION)
-			msm_batt_update_psy_status_v1();
+		if (msm_batt_info.chg_api_version >= CHARGER_API_VERSION){
+//wake_lock(&vbus_wake_lock);			
+msm_batt_update_psy_status_v1();
+//wake_unlock(&vbus_wake_lock);
+}
 		else
 			msm_batt_update_psy_status_v0();
 	}
@@ -3274,6 +3279,7 @@ static int __devinit msm_batt_probe(struct platform_device *pdev)
 	msm_batt_info.early_suspend.suspend = msm_batt_early_suspend;
 	msm_batt_info.early_suspend.resume = msm_batt_late_resume;
 	register_early_suspend(&msm_batt_info.early_suspend);
+			      
 #endif
 	msm_batt_start_cb_thread();
 

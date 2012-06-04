@@ -32,7 +32,7 @@
 
 #define dprintk(msg...) cpufreq_debug_printk(CPUFREQ_DEBUG_CORE, \
 						"cpufreq-core", msg)
-#define max_screenoff_frequency 320000
+//#define max_screenoff_frequency 320000
 
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
@@ -2069,13 +2069,18 @@ int cpufreq_unregister_driver(struct cpufreq_driver *driver)
 }
 EXPORT_SYMBOL_GPL(cpufreq_unregister_driver);
 
-int store_freq_min;
-int store_freq_max;
-
+int store_freq_min=200000;
+int store_freq_max=800000;
+static bool screenoff=1;
+static int max_screenoff_frequency=320000;
+static int min_screenoff_frequency=122880;
+module_param(screenoff, bool, 0644);
+module_param(max_screenoff_frequency, int, 0644);
+module_param(min_screenoff_frequency, int, 0644);
 static void powersave_early_suspend(struct early_suspend *handler)
 {
 int cpu;
-
+if (screenoff) {
 for_each_online_cpu(cpu) {
 	struct cpufreq_policy *cpu_policy, new_policy;
 
@@ -2087,7 +2092,7 @@ for_each_online_cpu(cpu) {
 			store_freq_min = new_policy.min;
 			store_freq_max = new_policy.max;
 			new_policy.max = max_screenoff_frequency;
-			new_policy.min = cpu_policy->cpuinfo.min_freq;
+			new_policy.min = min_screenoff_frequency;
 			printk(KERN_INFO
 			"%s: set cpu%d freq in the %u-%u KHz range\n",
 			__func__, cpu, new_policy.min, new_policy.max);
@@ -2098,11 +2103,12 @@ for_each_online_cpu(cpu) {
 			cpufreq_cpu_put(cpu_policy);
 	}
 }
+}
 
 static void powersave_late_resume(struct early_suspend *handler)
 {
 int cpu;
-
+if (screenoff) {
 		for_each_online_cpu(cpu) {
 			struct cpufreq_policy *cpu_policy, new_policy;
 
@@ -2122,6 +2128,7 @@ int cpu;
 				out:
 			cpufreq_cpu_put(cpu_policy);
 	}
+}
 }
 
 static struct early_suspend _powersave_early_suspend = {

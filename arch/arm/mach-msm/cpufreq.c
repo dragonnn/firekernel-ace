@@ -122,8 +122,6 @@ static int msm_cpufreq_target(struct cpufreq_policy *policy,
 		ret = -EINVAL;
 		goto done;
 	}
-if (policy->cur == table[index].frequency)
-   return 0;
 
 
 #ifdef CONFIG_CPU_FREQ_DEBUG
