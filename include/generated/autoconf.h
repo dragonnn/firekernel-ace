@@ -1,7 +1,7 @@
 /*
  * Automatically generated C config: don't edit
  * Linux kernel version: 2.6.35.7
- * Tue Jun  5 18:03:08 2012
+ * Tue Jun  5 21:41:12 2012
  */
 #define AUTOCONF_INCLUDED
 #define CONFIG_RING_BUFFER 1
@@ -330,6 +330,7 @@
 #define CONFIG_SUSPEND 1
 #define CONFIG_CRYPTO_CBC 1
 #define CONFIG_AMSS_7X25_VERSION_2009 1
+#define CONFIG_FB_MSM_TRIPLE_BUFFER 1
 #define CONFIG_CPU_FREQ_MSM 1
 #define CONFIG_MSM_PM_TIMEOUT_HALT 1
 #define CONFIG_FS_MBCACHE 1
