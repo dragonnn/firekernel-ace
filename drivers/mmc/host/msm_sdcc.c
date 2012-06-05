@@ -1285,6 +1285,11 @@ static int msmsdcc_enable(struct mmc_host *mmc)
 	int rc;
 	struct device *dev = mmc->parent;
 
+	if (atomic_read(&dev->power.usage_count) > 0) {
+		pm_runtime_get_noresume(dev);
+		goto out;
+	}
+
 	rc = pm_runtime_get_sync(dev);
 
 	if (rc < 0) {
@@ -1292,6 +1297,7 @@ static int msmsdcc_enable(struct mmc_host *mmc)
 				__func__, rc);
 		return rc;
 	}
+out:
 	return 0;
 }
 
@@ -1990,9 +1996,9 @@ msmsdcc_runtime_suspend(struct device *dev)
 		 */
 		mmc->ios.clock = host->clk_rate;
 		mmc->ops->set_ios(host->mmc, &host->mmc->ios);
-
+		pm_runtime_get_noresume(dev);
 		rc = mmc_suspend_host(mmc);
-		
+		pm_runtime_put_noidle(dev);
 		if (!rc) {
 			/*
 			 * If MMC core level suspend is not supported, turn
