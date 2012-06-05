@@ -18,10 +18,6 @@ on fs
     mount ext4 /dev/block/stl13 /data wait nosuid nodev noatime nodiratime noauto_da_alloc
     mount ext4 /dev/block/stl14 /cache wait nosuid nodev noatime nodiratime noauto_da_alloc
 =======
-    mount ext4 /dev/block/stl12 /system ro wait noload noatime nodiratime noauto_da_alloc
-    mount ext4 /dev/block/stl13 /data wait nosuid nodev noatime nodiratime noauto_da_alloc
-    mount ext4 /dev/block/stl14 /cache wait noload nosuid nodev noatime nodiratime noauto_da_alloc
->>>>>>> unofficial-gb
 
     chown radio /dev/bml7
     chown radio /dev/bml10
