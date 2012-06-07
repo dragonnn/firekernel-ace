@@ -1285,6 +1285,7 @@ static int msmsdcc_enable(struct mmc_host *mmc)
 	int rc;
 	struct device *dev = mmc->parent;
 
+
 	rc = pm_runtime_get_sync(dev);
 
 	if (rc < 0) {
@@ -1616,6 +1617,7 @@ msmsdcc_probe(struct platform_device *pdev)
 	if (ret)
 		goto ioremap_free;
 
+
 	/*
 	 * Setup SDCC clock if derived from Dayatona
 	 * fabric core clock.
@@ -1895,7 +1897,7 @@ msmsdcc_probe(struct platform_device *pdev)
 		clk_put(host->dfab_pclk);
  dma_free:
 	dma_free_coherent(NULL, sizeof(struct msmsdcc_nc_dmadata),
-			host->dma.nc, host->dma.nc_busaddr);
+		host->dma.nc, host->dma.nc_busaddr);
  ioremap_free:
 	iounmap(host->base);
  host_free:
@@ -1975,8 +1977,18 @@ msmsdcc_runtime_suspend(struct device *dev)
 #endif /* ATHENV --- */
 		mmc->suspend_task = current;
 
+		/*
+		 * If the clocks are already turned off by SDIO clients (as
+		 * part of LPM), then clocks should be turned on before
+		 * calling mmc_suspend_host() because mmc_suspend_host might
+		 * send some commands to the card. The clocks will be turned
+		 * off again after mmc_suspend_host. Thus for SD/MMC/SDIO
+		 * cards, clocks will be turned on before mmc_suspend_host
+		 * and turned off after mmc_suspend_host.
+		 */
+		mmc->ios.clock = host->clk_rate;
+		mmc->ops->set_ios(host->mmc, &host->mmc->ios);
 		rc = mmc_suspend_host(mmc);
-		
 		if (!rc) {
 			/*
 			 * If MMC core level suspend is not supported, turn

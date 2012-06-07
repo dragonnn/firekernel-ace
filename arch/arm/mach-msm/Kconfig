@@ -1001,6 +1001,10 @@ config MSM_CPU_FREQ_MIN
 	int "Min CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
 	default 245760
+
+config MSM_CPU_FREQ_OVERCLOCK_800
+	bool "Enable overlocking on mach-msm"
+	default n
 	  
 endif # CPU_FREQ_MSM
 

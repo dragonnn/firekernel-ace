@@ -608,7 +608,6 @@ static int mmc_sd_suspend(struct mmc_host *host)
 {
 	BUG_ON(!host);
 	BUG_ON(!host->card);
-
 	host->card->state &= ~MMC_STATE_HIGHSPEED;
 	
 	return 0;
