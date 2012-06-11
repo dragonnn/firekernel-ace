@@ -314,14 +314,14 @@ void lcdc_s6d_set_brightness_by_aat1401(int level)
 
 	if(!tune_level) {
 			gpio_set_value(GPIO_BL_CTRL, 0);
-			//mdelay(3);
+			mdelay(3);
 	} else {
 		for(;tune_level>0;tune_level--) 
 		{
 			gpio_set_value(GPIO_BL_CTRL, 0);
-			//udelay(3);
+			udelay(3);
 			gpio_set_value(GPIO_BL_CTRL, 1);
-			//udelay(3);
+			udelay(3);
 		}
 	}
 
@@ -366,7 +366,7 @@ void lcdc_s6d_set_brightness_by_ktd259(int level)
 
 		if(tune_level <= 0) {
 				gpio_set_value(GPIO_BL_CTRL, 0);
-				//mdelay(3);
+				mdelay(3);
 				lcd_brightness = tune_level;
 				//printk("LCD Backlight OFF. tune:%d,lcd:%d\n",tune_level, lcd_brightness);
 		} else {
@@ -377,14 +377,14 @@ void lcdc_s6d_set_brightness_by_ktd259(int level)
 						{
 								lcd_brightness = 0;
 								gpio_set_value(GPIO_BL_CTRL, 0);
-								//mdelay(3); // guaranteed for shutdown
+								mdelay(3); // guaranteed for shutdown
 								printk("LCD Baklight init - first boot time\n");
 						}
 				}
 				if(!lcd_brightness)
 				{
 						gpio_set_value(GPIO_BL_CTRL, 1);
-						//udelay(3);
+						udelay(3);
 						lcd_brightness = MAX_BRIGHTNESS_IN_BLU;
 						//printk("LCD Backlight re-init - wakeup time tune:%d, lcd:%d\n",tune_level,lcd_brightness);
 				}
@@ -394,9 +394,9 @@ void lcdc_s6d_set_brightness_by_ktd259(int level)
 				for(;pulse>0;pulse--) 
 				{
 						gpio_set_value(GPIO_BL_CTRL, 0);
-						//udelay(1);
+						udelay(1);
 						gpio_set_value(GPIO_BL_CTRL, 1);
-						//udelay(1);
+						udelay(1);
 				}
 				spin_unlock_irqrestore(&bl_ctrl_lock,flag);
 		}

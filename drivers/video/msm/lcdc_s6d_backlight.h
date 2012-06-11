@@ -53,8 +53,8 @@ void lcdc_s6d_set_brightness_by_aat1401(int level);
 #define GPIO_BL_CTRL	26
 
 #define MAX_BRIGHTNESS_VALUE	255
-#define MIN_BRIGHTNESS_VALUE	2
-#define AAT_DIMMING_VALUE		2
+#define MIN_BRIGHTNESS_VALUE	30
+#define AAT_DIMMING_VALUE		29
 #if defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_LUCAS) || defined(CONFIG_MACH_TASS)
 #define KTD_DIMMING_VALUE		1
 #else

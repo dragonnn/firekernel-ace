@@ -1,8 +1,8 @@
-/* This file is auto generated, version 136 */
+/* This file is auto generated, version 152 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#136 PREEMPT Wed Jun 6 20:35:33 CEST 2012"
-#define LINUX_COMPILE_TIME "20:35:33"
+#define UTS_VERSION "#152 PREEMPT Mon Jun 11 19:38:16 CEST 2012"
+#define LINUX_COMPILE_TIME "19:38:16"
 #define LINUX_COMPILE_BY "dragonn"
 #define LINUX_COMPILE_HOST "arch"
 #define LINUX_COMPILE_DOMAIN "localdomain"
