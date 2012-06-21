@@ -869,7 +869,6 @@ static int msm_power_get_property(struct power_supply *psy,
 				  enum power_supply_property psp,
 				  union power_supply_propval *val)
 {
-	printk(KERN_INFO "__func__");
 	charger_type_t charger;
 	charger = msm_batt_info.current_chg_source;
 
