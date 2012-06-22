@@ -1771,7 +1771,7 @@ dwChargingState=CHARGING_STATE_TA_FULL_CHARGED;
 	}
 #endif	
 
-	printk("[Battery] Currnet Charging state [%x, %x]  Batt Level [%d] Percent [%d]\n",dwChargingState,msm_batt_info.battery_Celsius,msm_batt_info.battery_level,msm_batt_info.batt_capacity);
+	//printk("[Battery] Currnet Charging state [%x, %x]  Batt Level [%d] Percent [%d]\n",dwChargingState,msm_batt_info.battery_Celsius,msm_batt_info.battery_level,msm_batt_info.batt_capacity);
 	
 
 	if(oldChargingState!= dwChargingState)
@@ -1898,7 +1898,7 @@ if (msm_batt_info.battery_level<=3600){
 int GetAverageSample(int modified_sample){
 
 	int dwTotal_temp=0;
-printk(KERN_INFO "%s \n", __func__);
+//printk(KERN_INFO "%s \n", __func__);
 	//printk("[Battery] %s : Raw Vol ADC Sample = %d \n", __func__, modified_sample);
 	
 	if(uCount <= AVERAGE_SAMPLE_NUMBER)
@@ -1945,47 +1945,206 @@ static int get_batt_info(void)
 	if (msm_batt_info.battery_temp > 135)
 		msm_batt_info.battery_Celsius = -250;
 	
+	else if (msm_batt_info.battery_temp >= 134)	
+		msm_batt_info.battery_Celsius = -225;
+		
 	else if (msm_batt_info.battery_temp >= 133)	
 		msm_batt_info.battery_Celsius = -200;
 	
 	else if (msm_batt_info.battery_temp >= 132)	
 		msm_batt_info.battery_Celsius = -150;
 	
+	else if (msm_batt_info.battery_temp >= 131)	
+		msm_batt_info.battery_Celsius = -137;
+	
+	else if (msm_batt_info.battery_temp >= 130)	
+		msm_batt_info.battery_Celsius = -125;
+	
+	else if (msm_batt_info.battery_temp >= 129)	
+		msm_batt_info.battery_Celsius = -112;
+		
 	else if (msm_batt_info.battery_temp >= 128)	
 		msm_batt_info.battery_Celsius = -100;
+		
+	else if (msm_batt_info.battery_temp >= 127)	
+		msm_batt_info.battery_Celsius = -92;
+		
+	else if (msm_batt_info.battery_temp >= 126)	
+		msm_batt_info.battery_Celsius = -83;
+	
+	else if (msm_batt_info.battery_temp >= 125)	
+		msm_batt_info.battery_Celsius = -75;
+		
+	else if (msm_batt_info.battery_temp >= 124)	
+		msm_batt_info.battery_Celsius = -67;
+		
+	else if (msm_batt_info.battery_temp >= 123)	
+		msm_batt_info.battery_Celsius = -58;
 	
 	else if (msm_batt_info.battery_temp >= 122 )	
 		msm_batt_info.battery_Celsius = -50;
+		
+	else if (msm_batt_info.battery_temp >= 121 )	
+		msm_batt_info.battery_Celsius = -37;
+		
+	else if (msm_batt_info.battery_temp >= 120 )	
+		msm_batt_info.battery_Celsius = -25;
+		
+	else if (msm_batt_info.battery_temp >= 119 )	
+		msm_batt_info.battery_Celsius = -12;
 	
 	else if (msm_batt_info.battery_temp >= 118)	
 		msm_batt_info.battery_Celsius = 0;
+		
+	else if (msm_batt_info.battery_temp >= 117)	
+		msm_batt_info.battery_Celsius = 25;
 	
 	else if (msm_batt_info.battery_temp >= 116)	
 		msm_batt_info.battery_Celsius = 50;
+		
+	else if (msm_batt_info.battery_temp >= 115)	
+		msm_batt_info.battery_Celsius = 58;
+		
+	else if (msm_batt_info.battery_temp >= 114)	
+		msm_batt_info.battery_Celsius = 67;
 	
+	else if (msm_batt_info.battery_temp >= 113)	
+		msm_batt_info.battery_Celsius = 75;
+	
+	else if (msm_batt_info.battery_temp >= 112)	
+		msm_batt_info.battery_Celsius = 83;
+		
+	else if (msm_batt_info.battery_temp >= 111)	
+		msm_batt_info.battery_Celsius = 92;
+		
 	else if (msm_batt_info.battery_temp >= 110)	
 		msm_batt_info.battery_Celsius = 100;
+		
+	else if (msm_batt_info.battery_temp >= 109)	
+		msm_batt_info.battery_Celsius = 108;
+		
+	else if (msm_batt_info.battery_temp >= 108)	
+		msm_batt_info.battery_Celsius = 117;
+		
+	else if (msm_batt_info.battery_temp >= 107)	
+		msm_batt_info.battery_Celsius = 125;
+		
+	else if (msm_batt_info.battery_temp >= 106)	
+		msm_batt_info.battery_Celsius = 133;
+		
+	else if (msm_batt_info.battery_temp >= 105)	
+		msm_batt_info.battery_Celsius = 142;
 	
 	else if (msm_batt_info.battery_temp >= 104)	
 		msm_batt_info.battery_Celsius = 150;
+		
+	else if (msm_batt_info.battery_temp >= 103)	
+		msm_batt_info.battery_Celsius = 156;
+		
+	else if (msm_batt_info.battery_temp >= 102)	
+		msm_batt_info.battery_Celsius = 162;
+		
+	else if (msm_batt_info.battery_temp >= 101)	
+		msm_batt_info.battery_Celsius = 169;
+		
+	else if (msm_batt_info.battery_temp >= 100)	
+		msm_batt_info.battery_Celsius = 175;
+		
+	else if (msm_batt_info.battery_temp >= 99)	
+		msm_batt_info.battery_Celsius = 181;
+		
+	else if (msm_batt_info.battery_temp >= 98)	
+		msm_batt_info.battery_Celsius = 187;
+	
+	else if (msm_batt_info.battery_temp >= 97)	
+		msm_batt_info.battery_Celsius = 194;
 	
 	else if (msm_batt_info.battery_temp >= 96)	
 		msm_batt_info.battery_Celsius = 200;
 	
+	else if (msm_batt_info.battery_temp >= 95)	
+		msm_batt_info.battery_Celsius = 207;
+		
+	else if (msm_batt_info.battery_temp >= 94)	
+		msm_batt_info.battery_Celsius = 214;
+		
+	else if (msm_batt_info.battery_temp >= 93)	
+		msm_batt_info.battery_Celsius = 221;
+		
+	else if (msm_batt_info.battery_temp >= 92)	
+		msm_batt_info.battery_Celsius = 229;
+		
+	else if (msm_batt_info.battery_temp >= 91)	
+		msm_batt_info.battery_Celsius = 236;
+		
+	else if (msm_batt_info.battery_temp >= 90)	
+		msm_batt_info.battery_Celsius = 243;
+	
 	else if (msm_batt_info.battery_temp >= 89)	
 		msm_batt_info.battery_Celsius = 250;
 	
+	else if (msm_batt_info.battery_temp >= 88)	
+		msm_batt_info.battery_Celsius = 257;
+		
+	else if (msm_batt_info.battery_temp >= 87)	
+		msm_batt_info.battery_Celsius = 264;
+		
+	else if (msm_batt_info.battery_temp >= 86)	
+		msm_batt_info.battery_Celsius = 271;
+		
+	else if (msm_batt_info.battery_temp >= 85)	
+		msm_batt_info.battery_Celsius = 279;
+		
+	else if (msm_batt_info.battery_temp >= 84)	
+		msm_batt_info.battery_Celsius = 286;
+		
+	else if (msm_batt_info.battery_temp >= 83)	
+		msm_batt_info.battery_Celsius = 293;
+		
 	else if (msm_batt_info.battery_temp >= 82)	
 		msm_batt_info.battery_Celsius = 300;
 	
+	else if (msm_batt_info.battery_temp >= 81)	
+		msm_batt_info.battery_Celsius = 308;
+		
+	else if (msm_batt_info.battery_temp >= 80)	
+		msm_batt_info.battery_Celsius = 317;
+		
+	else if (msm_batt_info.battery_temp >= 79)	
+		msm_batt_info.battery_Celsius = 325;
+		
+	else if (msm_batt_info.battery_temp >= 78)	
+		msm_batt_info.battery_Celsius = 333;
+		
+	else if (msm_batt_info.battery_temp >= 77)	
+		msm_batt_info.battery_Celsius = 342;
+		
 	else if (msm_batt_info.battery_temp >= 76 )	
 		msm_batt_info.battery_Celsius = 350;
 	
+	else if (msm_batt_info.battery_temp >= 72)	
+		msm_batt_info.battery_Celsius = 375;
+		
 	else if (msm_batt_info.battery_temp >= 69)	
 		msm_batt_info.battery_Celsius = 400;
 	
 	else if (msm_batt_info.battery_temp >= 62)	
 		msm_batt_info.battery_Celsius = 450;
+		
+	else if (msm_batt_info.battery_temp >= 61)	
+		msm_batt_info.battery_Celsius = 457;
+		
+	else if (msm_batt_info.battery_temp >= 60)	
+		msm_batt_info.battery_Celsius = 464;
+		
+	else if (msm_batt_info.battery_temp >= 59)	
+		msm_batt_info.battery_Celsius = 471;
+		
+	else if (msm_batt_info.battery_temp >= 58)	
+		msm_batt_info.battery_Celsius = 479;
+		
+	else if (msm_batt_info.battery_temp >= 57)	
+		msm_batt_info.battery_Celsius = 486;
 	
 	else if (msm_batt_info.battery_temp >= 56)	
 		msm_batt_info.battery_Celsius = 500;
@@ -2064,17 +2223,17 @@ void msm_batt_check_event(struct work_struct *work)
 	int valor3=0;
 	if(!init_skip)
 		{
-				printk(KERN_ERR "[Battery] %s (init_skip) \n",__func__);
+				//printk(KERN_ERR "[Battery] %s (init_skip) \n",__func__);
 				
 				init_skip = 1;
 				return;
 		}
 		
-	printk(KERN_ERR "[Battery] %s \n", __func__);
+	//printk(KERN_ERR "[Battery] %s \n", __func__);
 	//wake_up(&msm_batt_info.wait_q);
 	valor1=get_batt_info();
 	
-	printk("[Battery] %s : scaled_level %d\n", __func__, valor1);
+	//printk("[Battery] %s : scaled_level %d\n", __func__, valor1);
 	mdelay(10);
 	//wait_event_interruptible_timeout(msm_batt_info.wait_q,0,msecs_to_jiffies(2000));
 	
@@ -2084,7 +2243,7 @@ void msm_batt_check_event(struct work_struct *work)
 	mdelay(10);
 	//wait_event_interruptible_timeout(msm_batt_info.wait_q,0, msecs_to_jiffies(2000));
 	valor3=get_batt_info();
-	printk("[Battery] %s : scaled_level %d\n", __func__, valor3);
+	//printk("[Battery] %s : scaled_level %d\n", __func__, valor3);
 	
 	msm_batt_info.batt_capacity=((valor1*valor3)+(valor2>>1))/valor2;
 

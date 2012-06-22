@@ -109,10 +109,7 @@ static int remove_migration_pte(struct page *new, struct vm_area_struct *vma,
 
 	ptep = pte_offset_map(pmd, addr);
 
-	if (!is_swap_pte(*ptep)) {
-		pte_unmap(ptep);
-		goto out;
- 	}
+	ptl = pte_lockptr(mm, pmd);
 
  	ptl = pte_lockptr(mm, pmd);
  	spin_lock(ptl);
