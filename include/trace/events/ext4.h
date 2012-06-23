@@ -9,6 +9,7 @@
 
 struct ext4_allocation_context;
 struct ext4_allocation_request;
+struct ext4_extent;
 struct ext4_prealloc_space;
 struct ext4_inode_info;
 struct mpage_da_data;

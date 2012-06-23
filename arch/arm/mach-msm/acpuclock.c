@@ -230,7 +230,7 @@ static struct clkctl_acpu_speed pll0_960_pll1_196_pll2_1200[] = {
 
 /* 7x27 normal with GSM capable modem - PLL0 and PLL1 swapped and pll2 @ 800 */
 static struct clkctl_acpu_speed pll0_960_pll1_245_pll2_800[] = {
-	{ 0, 19200, ACPU_PLL_TCXO, 0, 0, 19200, 0, 0, 30720 },
+	{ 0, 8200, ACPU_PLL_TCXO, 0, 0, 8200, 0, 0, 15720 },
 	{ 0, 120000, ACPU_PLL_0, 4, 7,  60000, 1, 1,  61440 },
 	{ 1, 122880, ACPU_PLL_1, 1, 1,  61440, 1, 1,  61440 },
 	{ 1, 200000, ACPU_PLL_2, 2, 3,  66667, 2, 2,  61440 },
@@ -261,9 +261,9 @@ static struct clkctl_acpu_speed pll0_960_pll1_245_pll2_800[] = {
 	{ 1, 902400, ACPU_PLL_2, 2, 0, 300800, 2, 7, 200000 },
 #else
 	{ 0, 400000, ACPU_PLL_2, 2, 1, 133333, 2, 4, 122880 },
-	{ 1, 480000, ACPU_PLL_0, 4, 1, 140000, 2, 5, 122880 },
-	{ 1, 540000, ACPU_PLL_2, 2, 0, 153600, 3, 6, 122880 },
-	{ 1, 614400, ACPU_PLL_2, 2, 0, 163600, 3, 6, 122880 },
+    { 1, 480000, ACPU_PLL_0, 4, 1, 140000, 2, 5, 122880 },
+    { 1, 540000, ACPU_PLL_2, 2, 0, 153600, 3, 6, 122880 },
+    { 1, 614400, ACPU_PLL_2, 2, 0, 163600, 3, 6, 122880 },
 	{ 1, 672000, ACPU_PLL_2, 2, 0, 168000, 3, 6, 122880 },
 	{ 1, 729600, ACPU_PLL_2, 2, 0, 182400, 3, 7, 122880 },
 	{ 1, 768000, ACPU_PLL_2, 2, 0, 192000, 3, 7, 122880 },
@@ -413,7 +413,7 @@ static int pc_pll_request(unsigned id, unsigned on)
  * ARM11 'owned' clock control
  *---------------------------------------------------------------------------*/
 
-#define POWER_COLLAPSE_KHZ 19200
+#define POWER_COLLAPSE_KHZ 8200
 unsigned long acpuclk_power_collapse(void)
 {
 	int ret = acpuclk_get_rate(smp_processor_id());

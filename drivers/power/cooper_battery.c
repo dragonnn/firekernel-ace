@@ -869,7 +869,6 @@ static int msm_power_get_property(struct power_supply *psy,
 				  enum power_supply_property psp,
 				  union power_supply_propval *val)
 {
-	printk(KERN_INFO "__func__");
 	charger_type_t charger;
 	charger = msm_batt_info.current_chg_source;
 
@@ -1772,7 +1771,7 @@ dwChargingState=CHARGING_STATE_TA_FULL_CHARGED;
 	}
 #endif	
 
-	printk("[Battery] Currnet Charging state [%x, %x]  Batt Level [%d] Percent [%d]\n",dwChargingState,msm_batt_info.battery_Celsius,msm_batt_info.battery_level,msm_batt_info.batt_capacity);
+	//printk("[Battery] Currnet Charging state [%x, %x]  Batt Level [%d] Percent [%d]\n",dwChargingState,msm_batt_info.battery_Celsius,msm_batt_info.battery_level,msm_batt_info.batt_capacity);
 	
 
 	if(oldChargingState!= dwChargingState)
@@ -1899,7 +1898,7 @@ if (msm_batt_info.battery_level<=3600){
 int GetAverageSample(int modified_sample){
 
 	int dwTotal_temp=0;
-printk(KERN_INFO "%s \n", __func__);
+//printk(KERN_INFO "%s \n", __func__);
 	//printk("[Battery] %s : Raw Vol ADC Sample = %d \n", __func__, modified_sample);
 	
 	if(uCount <= AVERAGE_SAMPLE_NUMBER)
@@ -1945,64 +1944,396 @@ static int get_batt_info(void)
 	// hsil for display temp
 	if (msm_batt_info.battery_temp > 135)
 		msm_batt_info.battery_Celsius = -250;
+	else if (msm_batt_info.battery_temp <= 135) {
+		switch(msm_batt_info.battery_temp) {
+		case 134:
+			msm_batt_info.battery_Celsius = -225;
+		break;
+		
+		case 133:
+			msm_batt_info.battery_Celsius = -200;
+		break;
+		
+		case 132:
+			msm_batt_info.battery_Celsius = -150;
+		break;
+		
+		case 131:
+			msm_batt_info.battery_Celsius = -137;
+		break;
+		
+		case 130:
+			msm_batt_info.battery_Celsius = -125;
+		break;
+		
+		case 129:
+			msm_batt_info.battery_Celsius = -112;
+		break;
+		
+		case 128:
+			msm_batt_info.battery_Celsius = -100;
+		break;
+		
+		case 127:
+			msm_batt_info.battery_Celsius = -92;
+		break;
+		
+		case 126:
+			msm_batt_info.battery_Celsius = -83;
+		break;
+		
+		case 125:
+			msm_batt_info.battery_Celsius = -75;
+		break;
+		
+		case 124:
+			msm_batt_info.battery_Celsius = -67;
+		break;
+		
+		case 123:
+			msm_batt_info.battery_Celsius = -58;
+		break;
+		
+		case 122:
+			msm_batt_info.battery_Celsius = -50;
+		break;
+		
+		case 121:
+			msm_batt_info.battery_Celsius = -37;
+		break;
+		
+		case 120:
+			msm_batt_info.battery_Celsius = -25;
+		break;
+		
+		case 119:
+			msm_batt_info.battery_Celsius = -12;
+		break;
+		
+		case 118:
+			msm_batt_info.battery_Celsius = 0;
+		break;
+		
+		case 117:
+			msm_batt_info.battery_Celsius = 25;
+		break;
+		
+		case 116:
+			msm_batt_info.battery_Celsius = 50;
+		break;
+		
+		case 115:
+			msm_batt_info.battery_Celsius = 58;
+		break;
+		
+		case 114:
+			msm_batt_info.battery_Celsius = 67;
+		break;
+		
+		case 113:
+			msm_batt_info.battery_Celsius = 75;
+		break;
+		
+		case 112:
+			msm_batt_info.battery_Celsius = 83;
+		break;
+		
+		case 111:
+			msm_batt_info.battery_Celsius = 92;
+		break;
+		
+		case 110:
+			msm_batt_info.battery_Celsius = 100;
+		break;
+		
+		case 109:
+			msm_batt_info.battery_Celsius = 108;
+		break;
+		
+		case 108:
+			msm_batt_info.battery_Celsius = 117;
+		break;
+		
+		case 107:
+			msm_batt_info.battery_Celsius = 125;
+		break;
+		
+		case 106:
+			msm_batt_info.battery_Celsius = 133;
+		break;
+		
+		case 105:
+			msm_batt_info.battery_Celsius = 142;
+		break;
+		
+		case 104:
+			msm_batt_info.battery_Celsius = 150;
+		break;
+		
+		case 103:
+			msm_batt_info.battery_Celsius = 156;
+		break;
+		
+		case 102:
+			msm_batt_info.battery_Celsius = 162;
+		break;
+		
+		case 101:
+			msm_batt_info.battery_Celsius = 169;
+		break;
+		
+		case 100:
+			msm_batt_info.battery_Celsius = 175;
+		break;
+		
+		case 99:
+			msm_batt_info.battery_Celsius = 181;
+		break;
+		
+		case 98:
+			msm_batt_info.battery_Celsius = 187;
+		break;
+		
+		case 97:
+			msm_batt_info.battery_Celsius = 194;
+		break;
+		
+		case 96:
+			msm_batt_info.battery_Celsius = 200;
+		break;
+		
+		case 95:
+			msm_batt_info.battery_Celsius = 207;
+		break;
+		
+		case 94:
+			msm_batt_info.battery_Celsius = 214;
+		break;
+		
+		case 93:
+			msm_batt_info.battery_Celsius = 221;
+		break;
+		
+		case 92:
+			msm_batt_info.battery_Celsius = 229;
+		break;
+		
+		case 91:
+			msm_batt_info.battery_Celsius = 236;
+		break;
+		
+		case 90:
+			msm_batt_info.battery_Celsius = 250;
+		break;
+		
+		case 89:
+			msm_batt_info.battery_Celsius = 257;
+		break;
+		
+		case 87:
+			msm_batt_info.battery_Celsius = 264;
+		break;
+		
+		case 86:
+			msm_batt_info.battery_Celsius = 271;
+		break;
+		
+		case 85:
+			msm_batt_info.battery_Celsius = 279;
+		break;
+		
+		case 84:
+			msm_batt_info.battery_Celsius = 286;
+		break;
+		
+		case 83:
+			msm_batt_info.battery_Celsius = 293;
+		break;
+		
+		case 82:
+			msm_batt_info.battery_Celsius = 300;
+		break;
+		
+		case 81:
+			msm_batt_info.battery_Celsius = 308;
+		break;
+		
+		case 80:
+			msm_batt_info.battery_Celsius = 317;
+		break;
+		
+		case 79:
+			msm_batt_info.battery_Celsius = 325;
+		break;
+		
+		case 78:
+			msm_batt_info.battery_Celsius = 333;
+		break;
+		
+		case 77:
+			msm_batt_info.battery_Celsius = 342;
+		break;
+		
+		case 76:
+			msm_batt_info.battery_Celsius = 350;
+		break;
+		
+		case 75:
+			msm_batt_info.battery_Celsius = 357;
+		break;
+		
+		case 74:
+			msm_batt_info.battery_Celsius = 364;
+		break;
+		
+		case 73:
+			msm_batt_info.battery_Celsius = 371;
+		break;
+		
+		case 72:
+			msm_batt_info.battery_Celsius = 379;
+		break;
+		
+		case 71:
+			msm_batt_info.battery_Celsius = 386;
+		break;
+		
+		case 70:
+			msm_batt_info.battery_Celsius = 393;
+		break;
+		
+		case 69:
+			msm_batt_info.battery_Celsius = 400;
+		break;
+		
+		
+		case 68:
+			msm_batt_info.battery_Celsius = 407;
+		break;
+		
+		case 67:
+			msm_batt_info.battery_Celsius = 414;
+		break;
+		
+		case 66:
+			msm_batt_info.battery_Celsius = 421;
+		break;
+		
+		case 65:
+			msm_batt_info.battery_Celsius = 429;
+		break;
+		
+		case 64:
+			msm_batt_info.battery_Celsius = 436;
+		break;
+		
+		case 63:
+			msm_batt_info.battery_Celsius = 443;
+		break;
+		
+		case 62:
+			msm_batt_info.battery_Celsius = 450;
+		break;
+		
+		case 61:
+			msm_batt_info.battery_Celsius = 457;
+		break;
+		
+		case 60:
+			msm_batt_info.battery_Celsius = 464;
+		break;
+		
+		case 59:
+			msm_batt_info.battery_Celsius = 471;
+		break;
+		
+		case 58:
+			msm_batt_info.battery_Celsius = 479;
+		break;
+		
+		case 57:
+			msm_batt_info.battery_Celsius = 486;
+		break;
+		
+		case 56:
+			msm_batt_info.battery_Celsius = 500;
+		break;
+		
+		case 55:
+			msm_batt_info.battery_Celsius = 508;
+		break;
+		
+		case 54:
+			msm_batt_info.battery_Celsius = 517;
+		break;
+		
+		case 53:
+			msm_batt_info.battery_Celsius = 529;
+		break;
+		
+		case 52:
+			msm_batt_info.battery_Celsius = 533;
+		break;
+		
+		case 51:
+			msm_batt_info.battery_Celsius = 542;
+		break;
+		
+		case 50:
+			msm_batt_info.battery_Celsius = 550;
+		break;
+		
+		case 49:
+			msm_batt_info.battery_Celsius = 554;
+		break;
+		
+		case 48:
+			msm_batt_info.battery_Celsius = 558;
+		break;
+		
+		case 47:
+			msm_batt_info.battery_Celsius = 561;
+		break;
+		
+		case 46:
+			msm_batt_info.battery_Celsius = 565;
+		break;
+		
+		case 45:
+			msm_batt_info.battery_Celsius = 569;
+		break;
+		
+		case 44:
+			msm_batt_info.battery_Celsius = 573;
+		break;
+		
+		case 43:
+			msm_batt_info.battery_Celsius = 576;
+		break;
+		
+		case 42:
+			msm_batt_info.battery_Celsius = 580;
+		break;
+		
+		case 41:
+			msm_batt_info.battery_Celsius = 590;
+		break;
+		
+		case 40:
+			msm_batt_info.battery_Celsius = 600;
+		break;
+		
+		case 39:
+			msm_batt_info.battery_Celsius = 615;
+		break;
+		
+		case 38:
+			msm_batt_info.battery_Celsius = 630;
+		break;
+		}
+	}
 	
-	else if (msm_batt_info.battery_temp >= 133)	
-		msm_batt_info.battery_Celsius = -200;
-	
-	else if (msm_batt_info.battery_temp >= 132)	
-		msm_batt_info.battery_Celsius = -150;
-	
-	else if (msm_batt_info.battery_temp >= 128)	
-		msm_batt_info.battery_Celsius = -100;
-	
-	else if (msm_batt_info.battery_temp >= 122 )	
-		msm_batt_info.battery_Celsius = -50;
-	
-	else if (msm_batt_info.battery_temp >= 118)	
-		msm_batt_info.battery_Celsius = 0;
-	
-	else if (msm_batt_info.battery_temp >= 116)	
-		msm_batt_info.battery_Celsius = 50;
-	
-	else if (msm_batt_info.battery_temp >= 110)	
-		msm_batt_info.battery_Celsius = 100;
-	
-	else if (msm_batt_info.battery_temp >= 104)	
-		msm_batt_info.battery_Celsius = 150;
-	
-	else if (msm_batt_info.battery_temp >= 96)	
-		msm_batt_info.battery_Celsius = 200;
-	
-	else if (msm_batt_info.battery_temp >= 89)	
-		msm_batt_info.battery_Celsius = 250;
-	
-	else if (msm_batt_info.battery_temp >= 82)	
-		msm_batt_info.battery_Celsius = 300;
-	
-	else if (msm_batt_info.battery_temp >= 76 )	
-		msm_batt_info.battery_Celsius = 350;
-	
-	else if (msm_batt_info.battery_temp >= 69)	
-		msm_batt_info.battery_Celsius = 400;
-	
-	else if (msm_batt_info.battery_temp >= 62)	
-		msm_batt_info.battery_Celsius = 450;
-	
-	else if (msm_batt_info.battery_temp >= 56)	
-		msm_batt_info.battery_Celsius = 500;
-	
-	else if (msm_batt_info.battery_temp >= 50 )	
-		msm_batt_info.battery_Celsius = 550;
-	
-	else if (msm_batt_info.battery_temp >= 42 )
-		msm_batt_info.battery_Celsius = 580;
-
-	else if (msm_batt_info.battery_temp >= 40 )
-		msm_batt_info.battery_Celsius = 600;
-
-	else if (msm_batt_info.battery_temp >= 38 )
-		msm_batt_info.battery_Celsius = 630;
-	else
+	else if (msm_batt_info.battery_temp < 38)
 		msm_batt_info.battery_Celsius = 640;
 	
 
@@ -2065,17 +2396,17 @@ void msm_batt_check_event(struct work_struct *work)
 	int valor3=0;
 	if(!init_skip)
 		{
-				printk(KERN_ERR "[Battery] %s (init_skip) \n",__func__);
+				//printk(KERN_ERR "[Battery] %s (init_skip) \n",__func__);
 				
 				init_skip = 1;
 				return;
 		}
 		
-	printk(KERN_ERR "[Battery] %s \n", __func__);
+	//printk(KERN_ERR "[Battery] %s \n", __func__);
 	//wake_up(&msm_batt_info.wait_q);
 	valor1=get_batt_info();
 	
-	printk("[Battery] %s : scaled_level %d\n", __func__, valor1);
+	//printk("[Battery] %s : scaled_level %d\n", __func__, valor1);
 	mdelay(10);
 	//wait_event_interruptible_timeout(msm_batt_info.wait_q,0,msecs_to_jiffies(2000));
 	
@@ -2085,7 +2416,7 @@ void msm_batt_check_event(struct work_struct *work)
 	mdelay(10);
 	//wait_event_interruptible_timeout(msm_batt_info.wait_q,0, msecs_to_jiffies(2000));
 	valor3=get_batt_info();
-	printk("[Battery] %s : scaled_level %d\n", __func__, valor3);
+	//printk("[Battery] %s : scaled_level %d\n", __func__, valor3);
 	
 	msm_batt_info.batt_capacity=((valor1*valor3)+(valor2>>1))/valor2;
 
