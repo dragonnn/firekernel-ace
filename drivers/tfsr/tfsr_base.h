@@ -33,8 +33,8 @@
 #include <FSR_BML.h>
 #include <FSR_LLD.h>
 #ifdef CONFIG_PM
-#include <../Core/BML/FSR_BML_Types.h>
-#include <../Core/BML/FSR_BML_BIFCommon.h>
+//#include <../Core/BML/FSR_BML_Types.h>
+//#include <../Core/BML/FSR_BML_BIFCommon.h>
 #endif
 
 #define SECTOR_SIZE             512
