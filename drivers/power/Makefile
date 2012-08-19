@@ -58,3 +58,4 @@ endif
 ifeq ($(CONFIG_MACH_CALLISTO),y)
 obj-$(CONFIG_BATTERY_MSM)	+= callisto_battery.o
 endif
+obj-$(CONFIG_BATTERY_COMPATIBLY_MSM)	+= fake_battery.o

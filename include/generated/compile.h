@@ -1,9 +1,9 @@
-/* This file is auto generated, version 204 */
+/* This file is auto generated, version 267 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#204 PREEMPT Sun Jul 22 18:42:57 CEST 2012"
-#define LINUX_COMPILE_TIME "18:42:57"
+#define UTS_VERSION "#267 PREEMPT Sat Aug 18 21:36:29 CEST 2012"
+#define LINUX_COMPILE_TIME "21:36:29"
 #define LINUX_COMPILE_BY "dragonn"
 #define LINUX_COMPILE_HOST "arch"
 #define LINUX_COMPILE_DOMAIN "localdomain"
-#define LINUX_COMPILER "gcc version 4.5.2 (Sourcery G++ Lite 2011.03-42) "
+#define LINUX_COMPILER "gcc version 4.7.1 20120531 (prerelease) (crosstool-NG linaro-1.13.1-2012.06-20120625 - Linaro GCC 2012.06) "
