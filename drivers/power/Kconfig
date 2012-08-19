@@ -212,4 +212,10 @@ config BATTERY_QCIBAT
 	 Say Y here if you want to use the Quanta battery driver for ST15
 	 platform.
 
+config BATTERY_COMPATIBLY_MSM
+	tristate "Compatilby for MSM battery as module"
+	depends on ARCH_MSM
+	default y
+	help
+	  Say Y to build MSM battery driver as module
 endif # POWER_SUPPLY
