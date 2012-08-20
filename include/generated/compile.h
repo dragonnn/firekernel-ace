@@ -1,16 +1,8 @@
-<<<<<<< HEAD
-/* This file is auto generated, version 206 */
+/* This file is auto generated, version 271 */
 /*  PREEMPT */
 #define UTS_MACHINE "arm"
-#define UTS_VERSION "#206 PREEMPT Sun Jul 22 19:02:42 CEST 2012"
-#define LINUX_COMPILE_TIME "19:02:42"
-=======
-/* This file is auto generated, version 269 */
-/*  PREEMPT */
-#define UTS_MACHINE "arm"
-#define UTS_VERSION "#269 PREEMPT Sun Aug 19 20:08:31 CEST 2012"
-#define LINUX_COMPILE_TIME "20:08:31"
->>>>>>> unofficial-gb
+#define UTS_VERSION "#271 PREEMPT Sun Aug 19 20:32:21 CEST 2012"
+#define LINUX_COMPILE_TIME "20:32:21"
 #define LINUX_COMPILE_BY "dragonn"
 #define LINUX_COMPILE_HOST "arch"
 #define LINUX_COMPILE_DOMAIN "localdomain"
