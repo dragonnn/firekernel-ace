@@ -13,11 +13,9 @@ on init
     insmod /lib/modules/reset_modem.ko
 
 on fs
-<<<<<<< HEAD
     mount ext4 /dev/block/stl12 /system wait nodev noatime nodiratime noauto_da_alloc
     mount ext4 /dev/block/stl13 /data wait nosuid nodev noatime nodiratime noauto_da_alloc
     mount ext4 /dev/block/stl14 /cache wait nosuid nodev noatime nodiratime noauto_da_alloc
-=======
 
     chown radio /dev/bml7
     chown radio /dev/bml10
