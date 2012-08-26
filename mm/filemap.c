@@ -642,7 +642,9 @@ repeat:
 	pagep = radix_tree_lookup_slot(&mapping->page_tree, offset);
 	if (pagep) {
 		page = radix_tree_deref_slot(pagep);
-		if (unlikely(!page || page == RADIX_TREE_RETRY))
+		if (unlikely(!page))
+			goto out;
+		if (radix_tree_deref_retry(page))
 			goto repeat;
 
 		if (!page_cache_get_speculative(page))
@@ -658,6 +660,7 @@ repeat:
 			goto repeat;
 		}
 	}
+out:
 	rcu_read_unlock();
 
 	return page;
@@ -775,12 +778,11 @@ repeat:
 		page = radix_tree_deref_slot((void **)pages[i]);
 		if (unlikely(!page))
 			continue;
-		/*
-		 * this can only trigger if nr_found == 1, making livelock
-		 * a non issue.
-		 */
-		if (unlikely(page == RADIX_TREE_RETRY))
+		if (radix_tree_deref_retry(page)) {
+			if (ret)
+				start = pages[ret-1]->index;
 			goto restart;
+		}
 
 		if (!page_cache_get_speculative(page))
 			goto repeat;
@@ -828,11 +830,7 @@ repeat:
 		page = radix_tree_deref_slot((void **)pages[i]);
 		if (unlikely(!page))
 			continue;
-		/*
-		 * this can only trigger if nr_found == 1, making livelock
-		 * a non issue.
-		 */
-		if (unlikely(page == RADIX_TREE_RETRY))
+		if (radix_tree_deref_retry(page))
 			goto restart;
 
 		if (page->mapping == NULL || page->index != index)
@@ -885,11 +883,7 @@ repeat:
 		page = radix_tree_deref_slot((void **)pages[i]);
 		if (unlikely(!page))
 			continue;
-		/*
-		 * this can only trigger if nr_found == 1, making livelock
-		 * a non issue.
-		 */
-		if (unlikely(page == RADIX_TREE_RETRY))
+		if (radix_tree_deref_retry(page))
 			goto restart;
 
 		if (!page_cache_get_speculative(page))
@@ -1027,6 +1021,9 @@ find_page:
 				goto page_not_up_to_date;
 			if (!trylock_page(page))
 				goto page_not_up_to_date;
+			/* Did it get truncated before we got the lock? */
+			if (!page->mapping)
+				goto page_not_up_to_date_locked;
 			if (!mapping->a_ops->is_partially_uptodate(page,
 								desc, offset))
 				goto page_not_up_to_date_locked;

@@ -261,6 +261,7 @@ __acquires(musb->lock)
 					ctrlrequest->wIndex & 0x0f;
 				struct musb_ep		*musb_ep;
 				struct musb_hw_ep	*ep;
+				struct musb_request	*request;
 				void __iomem		*regs;
 				int			is_in;
 				u16			csr;
@@ -300,6 +301,14 @@ __acquires(musb->lock)
 					csr &= ~(MUSB_RXCSR_P_SENDSTALL |
 						 MUSB_RXCSR_P_SENTSTALL);
 					musb_writew(regs, MUSB_RXCSR, csr);
+				}
+
+				/* Maybe start the first request in the queue */
+				request = to_musb_request(
+						next_request(musb_ep));
+				if (!musb_ep->busy && request) {
+					DBG(3, "restarting the request\n");
+					musb_ep_restart(musb, request);
 				}
 
 				/* select ep0 again */
@@ -417,6 +426,7 @@ stall:
 					ctrlrequest->wIndex & 0x0f;
 				struct musb_ep		*musb_ep;
 				struct musb_hw_ep	*ep;
+				struct musb_request	*request;
 				void __iomem		*regs;
 				int			is_in;
 				u16			csr;
@@ -451,6 +461,14 @@ stall:
 						| MUSB_RXCSR_CLRDATATOG
 						| MUSB_RXCSR_P_WZC_BITS;
 					musb_writew(regs, MUSB_RXCSR, csr);
+				}
+
+				/* Maybe start the first request in the queue */
+				request = to_musb_request(
+						next_request(musb_ep));
+				if (!musb_ep->busy && request) {
+					DBG(3, "restarting the request\n");
+					musb_ep_restart(musb, request);
 				}
 
 				/* select ep0 again */
