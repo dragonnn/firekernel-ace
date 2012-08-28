@@ -1748,6 +1748,11 @@ static struct platform_device msm_camera_sensor_s5k4ecgx = {
                 .platform_data = &msm_camera_sensor_s5k4ecgx_data,
         },   
 };
+
+static struct platform_device msm_camera_flashlight_leds = {
+	.name	= "flashlight-leds",
+	.id	= -1,
+};
 #endif
 
 #ifdef CONFIG_SR200PC10 //PGH
@@ -2088,6 +2093,7 @@ static struct platform_device *devices[] __initdata = {
 #endif
 #ifdef CONFIG_S5K4ECGX_COOPER
 	&msm_camera_sensor_s5k4ecgx,
+	&msm_camera_flashlight_leds,
 #endif
 #ifdef CONFIG_S5K5CA //PCAM
 	&msm_camera_sensor_s5k5ca,
