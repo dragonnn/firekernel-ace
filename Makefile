@@ -193,7 +193,7 @@ export KBUILD_BUILDHOST := $(SUBARCH)
 #CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 ARCH            =arm
 #CROSS_COMPILE   =../../toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-CROSS_COMPILE   =/home/dragonn/Android/git/gcc-linaro/bin/arm-linux-gnueabihf-
+CROSS_COMPILE   =/home/dragonn/Android/kernel/gcc-linaro/bin/arm-linux-gnueabihf-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
