@@ -172,6 +172,14 @@ config MACH_BENI
 	help
 	  Support for the Samsung Beni board.
 
+config MACH_GIO
+	depends on ARCH_MSM7X27
+	depends on !MSM_STACKED_MEMORY
+	default n
+	bool "Gio"
+	help
+	  Support for the Samsung Gio board.
+
 config MACH_TASS
 	depends on ARCH_MSM7X27
 	depends on !MSM_STACKED_MEMORY
@@ -436,7 +444,8 @@ config PHYS_OFFSET
 	default "0x13600000" if !MSM_STACKED_MEMORY && MACH_COOPER
 	default "0x13600000" if !MSM_STACKED_MEMORY && MACH_BENI
 	default "0x13600000" if !MSM_STACKED_MEMORY && MACH_TASS	
-	default "0x13600000" if !MSM_STACKED_MEMORY && MACH_LUCAS	
+	default "0x13600000" if !MSM_STACKED_MEMORY && MACH_LUCAS
+	default "0x13600000" if !MSM_STACKED_MEMORY && MACH_GIO	
 	default "0x00200000" if !MSM_STACKED_MEMORY && MACH_EUROPA
 	default "0x00000000" if ARCH_QSD8X50 && MSM_SOC_REV_A
 	default "0x20000000" if ARCH_QSD8X50

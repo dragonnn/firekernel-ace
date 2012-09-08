@@ -284,6 +284,22 @@ config KEYPAD_TOUCH_BLN
 	  Say Y here to enable the backlight notification
 	  for android led-notification (modified liblight needed)
 
+config KEYPAD_TOUCH_BLN
+        bool "BLN touch keypad: use backlight notification"
+        depends on LEDS_MSM_PMIC
+        default n
+        help
+          Say Y here to enable the backlight notification
+          for android led-notification (modified liblight needed)
+
+config KEYPAD_TOUCH_BLN
+        bool "BLN touch keypad: use backlight notification"
+        depends on LEDS_MSM_PMIC
+        default n
+        help
+          Say Y here to enable the backlight notification
+          for android led-notification (modified liblight needed)
+
 config LEDS_PMIC8058
 	tristate "LED Support for Qualcomm PMIC8058"
 	default n

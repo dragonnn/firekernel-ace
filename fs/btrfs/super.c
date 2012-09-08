@@ -31,6 +31,7 @@
 #include <linux/mpage.h>
 #include <linux/swap.h>
 #include <linux/writeback.h>
+#include <linux/cleancache.h>
 #include <linux/statfs.h>
 #include <linux/cleancache.h>
 #include <linux/compat.h>

@@ -315,7 +315,7 @@ static struct struct_frame_buf_mark  frame_buf_mark = {
 	.resY   = 400,
 	.bpp    = 24,
 #endif	
-#if defined(CONFIG_MACH_COOPER)
+#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_GIO)
 	.resX   = 320,
 	.resY   = 480,
 	.bpp    = 24,
@@ -706,7 +706,7 @@ void msm_fb_set_backlight(struct msm_fb_data_type *mfd, __u32 bkl_lvl, u32 save)
 	}
 }
 
-#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_LUCAS)
+#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_GIO) || defined(CONFIG_MACH_LUCAS)
 struct msm_fb_data_type *cur_mfd;
 static void bckl_func(struct work_struct *ignored); 
 static DECLARE_DELAYED_WORK(bckl_work, bckl_func);
@@ -760,7 +760,7 @@ static int msm_fb_blank_sub(int blank_mode, struct fb_info *info,
 			if (ret == 0) {
 				mfd->panel_power_on = TRUE;
 
-#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_LUCAS)
+#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_GIO) || defined(CONFIG_MACH_LUCAS)
 			cur_mfd = mfd;
 			schedule_delayed_work(&bckl_work, 10);
 #else
@@ -795,7 +795,7 @@ static int msm_fb_blank_sub(int blank_mode, struct fb_info *info,
 			mfd->panel_power_on = FALSE;
 
 			msleep(16);
-#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_LUCAS)
+#if defined(CONFIG_MACH_COOPER) || defined(CONFIG_MACH_BENI) || defined(CONFIG_MACH_TASS) || defined(CONFIG_MACH_GIO) || defined(CONFIG_MACH_LUCAS)
 			msm_fb_set_backlight(mfd, 0, 0);
 #if defined(CONFIG_MACH_TASS)
 			//ESD Detection IRQ diabled
@@ -1401,6 +1401,9 @@ static int msm_fb_register(struct msm_fb_data_type *mfd)
 						   (u32 *) &mfd->panel_info.
 						   frame_count);
 
+#if defined(CONFIG_MACH_GIO)
+	if (!load_565rle_image_onfb( "GIO.rle",0,0)) ;	/* Flip buffer */
+#endif
 
 			switch (mfd->dest) {
 			case DISPLAY_LCD:

@@ -755,8 +755,8 @@ static int write_protect_page(struct vm_area_struct *vma, struct page *page,
 			goto out_unlock;
 		}
 		if (pte_dirty(entry))
-			set_page_dirty(page);
-		entry = pte_mkclean(pte_wrprotect(entry));
+                    set_page_dirty(page);
+                    entry = pte_mkclean(pte_wrprotect(entry));
 		set_pte_at_notify(mm, addr, ptep, entry);
 	}
 	*orig_pte = *ptep;
@@ -819,6 +819,8 @@ static int replace_page(struct vm_area_struct *vma, struct page *page,
 	set_pte_at_notify(mm, addr, ptep, mk_pte(kpage, vma->vm_page_prot));
 
 	page_remove_rmap(page);
+        if (!page_mapped(page))
+            try_to_free_swap(page);
 	put_page(page);
 
 	pte_unmap_unlock(ptep, ptl);
@@ -1273,12 +1275,7 @@ static struct rmap_item *scan_get_next_rmap_item(struct page **page)
 		slot = list_entry(slot->mm_list.next, struct mm_slot, mm_list);
 		ksm_scan.mm_slot = slot;
 		spin_unlock(&ksm_mmlist_lock);
-		/*
-		 * Although we tested list_empty() above, a racing __ksm_exit
-		 * of the last mm on the list may have removed it since then.
-		 */
-		if (slot == &ksm_mm_head)
-		return NULL;
+	
 next_mm:
 		ksm_scan.address = 0;
 		ksm_scan.rmap_list = &slot->rmap_list;
@@ -1750,8 +1747,13 @@ static int ksm_memory_callback(struct notifier_block *self,
 		/*
 		 * Keep it very simple for now: just lock out ksmd and
 		 * MADV_UNMERGEABLE while any memory is going offline.
+                 * mutex_lock_nested() is necessary because lockdep was alarmed
+                 * that here we take ksm_thread_mutex inside notifier chain
+                 * mutex, and later take notifier chain mutex inside
+                 * ksm_thread_mutex to unlock it.   But that's safe because both
+                 * are inside mem_hotplug_mutex.
 		 */
-		mutex_lock(&ksm_thread_mutex);
+		mutex_lock_nested(&ksm_thread_mutex, SINGLE_DEPTH_NESTING);
 		break;
 
 	case MEM_OFFLINE:
