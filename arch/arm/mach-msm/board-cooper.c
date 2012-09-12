@@ -89,6 +89,9 @@
 #endif
 #include <linux/i2c/europa_tsp_gpio.h>
 
+#ifdef CONFIG_TMD27711_PLSENSOR
+#include <linux/taos_common.h>
+#endif
 
 #ifdef CONFIG_ARCH_MSM7X25
 #define MSM_PMEM_MDP_SIZE	0xb21000
@@ -1515,7 +1518,47 @@ static struct i2c_board_info sensor_i2c_devices[] = {
 		I2C_BOARD_INFO("taos",0x39),  
 	},
 #endif
+
+
 };
+
+#ifdef CONFIG_TMD27711_PLSENSOR
+
+#define TMD27711_I2C_ADDR    0x39
+#define TMD27711_IRQ         27
+
+static struct tmd2771x_platform_data tmd27711_data = {
+	.pdrive = 0x03,
+	.ppcount = 0x08,
+	.setup_resources = NULL,
+	.release_resources = NULL,
+};
+
+static struct msm_gpio taos_gpio_int_config_data[] = {
+	{GPIO_CFG(TMD27711_IRQ, 0, GPIO_CFG_INPUT,  GPIO_CFG_PULL_UP, GPIO_CFG_8MA), "taos_irq" },
+};
+
+static void taos_init_irq(void)
+{
+	int ret = 0;
+	ret = msm_gpios_request_enable(taos_gpio_int_config_data, 1);
+	if (ret < 0) {
+		pr_err("%s: gpio enable failed: %d\n", __func__, ret);
+		return;
+	}
+	pr_info("%s\n", __func__);
+
+	return;
+}
+
+static struct i2c_board_info gpio_i2c_board_info[] = {
+	{
+		I2C_BOARD_INFO("tmd27711", TMD27711_I2C_ADDR),
+		.irq = MSM_GPIO_TO_INT(TMD27711_IRQ),
+		.platform_data = &tmd27711_data,
+	},
+};
+#endif
 
 static struct i2c_board_info mus_i2c_devices_new[] = {
 	{
