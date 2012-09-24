@@ -81,13 +81,11 @@ deps_config := \
 	fs/ext3/Kconfig \
 	fs/ext2/Kconfig \
 	fs/Kconfig \
-	drivers/samsung/Kconfig \
 	drivers/tfsr/Kconfig \
 	drivers/uv/Kconfig \
 	drivers/dpram/Kconfig \
 	drivers/platform/x86/Kconfig \
 	drivers/platform/Kconfig \
-	drivers/staging/zsmalloc/Kconfig \
 	drivers/staging/ath6kl/Kconfig \
 	drivers/staging/gobi/Kconfig \
 	drivers/staging/mrst-touchscreen/Kconfig \

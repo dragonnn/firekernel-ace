@@ -128,5 +128,5 @@ source "drivers/tfsr/Kconfig"
 
 #@source "drivers/param/Kconfig"
 
-source "drivers/samsung/Kconfig"
+#source "drivers/samsung/Kconfig"
 endmenu
