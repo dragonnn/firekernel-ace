@@ -18,10 +18,6 @@ suffix_$(CONFIG_INITRAMFS_COMPRESSION_LZMA)   = .lzma
 # XZ
 suffix_$(CONFIG_INITRAMFS_COMPRESSION_XZ)     = .xz
 
-
-# XZ
-suffix_$(CONFIG_INITRAMFS_COMPRESSION_XZ)     = .xz
-
 # Lzo
 suffix_$(CONFIG_INITRAMFS_COMPRESSION_LZO)   = .lzo
 

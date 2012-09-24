@@ -10,7 +10,7 @@
  */
 
 /**
- * @version     LinuStoreIII_1.2.0_b036-FSR_1.2.1p1_b139_RTM
+ * @version     LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  * @file        drivers/tfsr/PAM/Poseidon/FSR_PAM_Poseidon.c
  * @brief       This file contain the Platform Adaptation Modules for Poseidon
  *
@@ -32,11 +32,11 @@
 /*****************************************************************************/
 /**< if FSR_ENABLE_FLEXOND_LFT is defined, 
      Low level function table is linked with Flex-OneNAND LLD */
-//#define     FSR_ENABLE_FLEXOND_LFT
+#define     FSR_ENABLE_FLEXOND_LFT
 
 /**< if FSR_ENABLE_ONENAND_LFT is defined, 
      Low level function table is linked with OneNAND LLD */
-//#define     FSR_ENABLE_ONENAND_LFT
+#define     FSR_ENABLE_ONENAND_LFT
 
 /**< if FSR_ENABLE_4K_ONENAND_LFT is defined, 
      Low level function table is linked with OneNAND LLD */
@@ -297,33 +297,18 @@ FSR_PAM_Init(VOID)
         }
         else
         {
-
-	    /* Setup page size of OneNAND by checking amount of data buffers, 1 is 4KB page and 2 is 2KB page */
-            if ((gpOneNANDReg->nBufAmount & 0x0F00) == 0x0100)
+            gbFlexOneNAND[0] = FSR_OND_2K_PAGE;
+            gbFlexOneNAND[1] = FSR_OND_2K_PAGE;
+            
+            /* FB mask for supporting Demux and Mux device. */ 
+            if (((gpOneNANDReg->nDID & 0xFB) == 0x50) || ((gpOneNANDReg->nDID & 0xFB) == 0x68))
             {
                 gbFlexOneNAND[0] = FSR_OND_4K_PAGE;
                 gbFlexOneNAND[1] = FSR_OND_4K_PAGE;
             }
 
-	    /* Check amount of data buffers whether 2 (2KB page) (1: 4KB page)*/
-            if ((gpOneNANDReg->nBufAmount & 0x0F00) == 0x0100)
-            {
-                gbFlexOneNAND[0] = FSR_OND_4K_PAGE;
-                gbFlexOneNAND[1] = FSR_OND_4K_PAGE;
-            } else if ((gpOneNANDReg->nBufAmount & 0x0F00) == 0x0200)
-	    {
-                gbFlexOneNAND[0] = FSR_OND_2K_PAGE;
-                gbFlexOneNAND[1] = FSR_OND_2K_PAGE;
-            } else 
-	    {
-                RTL_PRINT((TEXT("[PAM:ERR] Not supported OneNAND. Amount of data buffers are %d\r\n"),
-					gpOneNANDReg->nBufAmount >> 8));
-                nRe = FSR_PAM_NAND_PROBE_FAILED;
-		break;
-            }
-
-            RTL_PRINT((TEXT("[PAM:   ]   OneNAND nMID=0x%2x : nDID=0x%02x Page size=%d\r\n"), 
-                    gpOneNANDReg->nMID, gpOneNANDReg->nDID, (gpOneNANDReg->nBufAmount >> 8) == 1 ? 4 : 2));
+            RTL_PRINT((TEXT("[PAM:   ]   OneNAND nMID=0x%2x : nDID=0x%02x\r\n"), 
+                    gpOneNANDReg->nMID, gpOneNANDReg->nDID));
         }
 
         gstFsrVolParm[0].nBaseAddr[0] = nONDVirBaseAddr;

@@ -9,7 +9,7 @@
  *---------------------------------------------------------------------------*
 */
 /**
- * @version	LinuStoreIII_1.2.0_b036-FSR_1.2.1p1_b139_RTM
+ * @version	LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  * @file        drivers/tfsr/tfsr_blkdev.c
  * @brief       This file is BML I/O part which supports linux kernel 2.6
  *              It provides (un)registering block device, request function
@@ -39,9 +39,9 @@ static LIST_HEAD(bml_list);
 
 #ifdef CONFIG_PM
 #include <linux/pm.h>
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
-int (*bml_module_suspend)(struct platform_device *pdev, pm_message_t state);
-int (*bml_module_resume)(struct platform_device *pdev);
+#ifdef FSR_FOR_2_6_15
+int (*bml_module_suspend)(struct device *dev, pm_message_t state);
+int (*bml_module_resume)(struct device *dev);
 #else
 int (*bml_module_suspend)(struct device *dev, u32 state, u32 level);
 int (*bml_module_resume)(struct device *dev, u32 level);
@@ -61,11 +61,7 @@ EXPORT_SYMBOL(bml_module_resume);
  *
  * It will erase a block before it do write the data
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-static int bml_transfer(u32 volume, u32 partno, const struct request *req, u32 data_len)
-#else
 static int bml_transfer(u32 volume, u32 partno, const struct request *req)
-#endif
 {
 	unsigned long sector, nsect;
 	char *buf;
@@ -80,14 +76,9 @@ static int bml_transfer(u32 volume, u32 partno, const struct request *req)
 	{
 		return 0;
 	}
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-	sector = blk_rq_pos(req);
-	nsect = data_len >> 9;
-#else
+	
 	sector = req->sector;
 	nsect = req->current_nr_sectors;
-#endif
 	buf = req->buffer;
 	
 	vs = fsr_get_vol_spec(volume);
@@ -156,10 +147,6 @@ static void bml_request(struct request_queue *rq)
 	int ret;
 #endif
 	int trans_ret;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-	int error = 0;
-	u32 len = 0;
-#endif
 
 	FSRVolSpec *vs;
 
@@ -169,11 +156,7 @@ static void bml_request(struct request_queue *rq)
 	if (dev->req)
 		return;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-	while ((dev->req = req = blk_peek_request(rq)) != NULL)
-#else
-	while ((dev->req = req = elv_next_request(rq)) != NULL) 
-#endif
+	while ((dev->req = req = blk_fetch_request(rq)) != NULL) 
 	{
 		spin_unlock_irq(rq->queue_lock);
 		
@@ -185,23 +168,6 @@ static void bml_request(struct request_queue *rq)
 		
 		DEBUG(DL3,"TINY[I]: volume(%d), partno(%d)\n", volume, partno);
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-		len = blk_rq_cur_bytes(req);
-		if (!( blk_rq_pos(req) & spp_mask) && ( blk_rq_cur_sectors(req) != blk_rq_sectors(req)))
-		{
-			blk_rq_map_sg(rq, req, dev->sg);
-			if (!((dev->sg->length >> SECTOR_BITS) & 0x7))
-			{
-				len = dev->sg->length;
-			}
-			if (len > blk_rq_bytes(req))
-			{
-				len = blk_rq_bytes(req);
-			}
-
-		}
-		trans_ret = bml_transfer(volume, partno, req, len);
-#else
 		if (!(req->sector & spp_mask) && (req->current_nr_sectors != req->nr_sectors))
 		{
 			blk_rq_map_sg(rq, req, dev->sg);
@@ -214,26 +180,13 @@ static void bml_request(struct request_queue *rq)
 				req->current_nr_sectors = req->nr_sectors;
 			}
 		}
+
 		trans_ret = bml_transfer(volume, partno, req);
-#endif
 		
 		spin_lock_irq(rq->queue_lock);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-		if (trans_ret)
-		{
-			error = 0;
-		} else
-		{
-			error = -EIO;
-		}
-		/* don't need to check if request is finished */
-		if (blk_rq_sectors(req) <= (len >> 9))
-			list_del_init(&req->queuelist);
-		__blk_end_request(req, error, len);
-
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)
 		req->hard_cur_sectors = req->current_nr_sectors;
-		end_request(req, trans_ret);
+		blk_end_request(req, 0, trans_ret);
 #else	
 		ret = end_that_request_chunk(req, trans_ret, req->current_nr_sectors << SECTOR_BITS);
 		if (!ret)
@@ -289,22 +242,14 @@ static int bml_add_disk(u32 volume, u32 partno)
 	dev->req = NULL;
 
 	/* alloc scatterlist */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-	dev->sg = kmalloc(sizeof(struct scatterlist) * dev->queue->limits.max_phys_segments, GFP_KERNEL);
-#else
 	dev->sg = kmalloc(sizeof(struct scatterlist) * dev->queue->max_phys_segments, GFP_KERNEL);
-#endif
 	if (!dev->sg)
 	{
 		kfree(dev);
 		return -ENOMEM;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 31)
-	memset(dev->sg, 0, sizeof(struct scatterlist) * dev->queue->limits.max_phys_segments);
-#else
 	memset(dev->sg, 0, sizeof(struct scatterlist) * dev->queue->max_phys_segments);
-#endif
 
 	/* Each partition is a physical disk which has one partition */
 	dev->gd = alloc_disk(1);
@@ -466,7 +411,7 @@ static void bml_blkdev_free(void)
  */
 #ifdef CONFIG_PM
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
-static int tfsr_suspend(struct platform_device *pdev, pm_message_t state)
+static int tfsr_suspend(struct device *dev, pm_message_t state)
 #else
 static int tfsr_suspend(struct device *dev, u32 state, u32 level)
 #endif
@@ -475,7 +420,7 @@ static int tfsr_suspend(struct device *dev, u32 state, u32 level)
 
 	if (NULL != bml_module_suspend) 
 	{
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
+#ifdef FSR_FOR_2_6_15
 		ret = bml_module_suspend(NULL,((struct pm_message){ .event = 0, }));
 #else
 		ret = bml_module_suspend(NULL, 0, 0);
@@ -493,7 +438,7 @@ static int tfsr_suspend(struct device *dev, u32 state, u32 level)
  * @return              0 on success
  */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
-static int tfsr_resume(struct platform_device *pdev)
+static int tfsr_resume(struct device *dev)
 #else
 static int tfsr_resume(struct device *dev, u32 level)
 #endif
@@ -504,7 +449,7 @@ static int tfsr_resume(struct device *dev, u32 level)
 
 	if (NULL != bml_module_resume) 
 	{
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
+#ifdef FSR_FOR_2_6_15
 		ret = bml_module_resume(NULL);
 #else
 		ret = bml_module_resume(NULL, 0);
@@ -522,29 +467,25 @@ static int tfsr_resume(struct device *dev, u32 level)
 
 /**
  * initialize bml driver structure
- * After linux 2.6.15 version, 
- * platform driver uses and checks struct platform_driver for suspend/resume
- * and platform_driver_register can register struct platform_driver to platform driver.
- * 
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30)
 static struct platform_driver tfsr_driver = {
-	.driver = {
-		.name		= DEVICE_NAME,
-		.owner		= THIS_MODULE,
-	},
+       .driver = {
+               .name           = DEVICE_NAME,
+               .bus            = &platform_bus_type,
 #ifdef CONFIG_PM
-	.suspend	= tfsr_suspend,
-	.resume		= tfsr_resume,
+               .suspend        = tfsr_suspend,
+               .resume         = tfsr_resume,
 #endif
+       }
 };
 #else
 static struct device_driver tfsr_driver = {
-	.name		= DEVICE_NAME,
-	.bus		= &platform_bus_type,
+	.name           = DEVICE_NAME,
+	.bus            = &platform_bus_type,
 #ifdef CONFIG_PM
-	.suspend	= tfsr_suspend,
-	.resume		= tfsr_resume,
+	.suspend        = tfsr_suspend,
+	.resume         = tfsr_resume,
 #endif
 };
 #endif
@@ -553,7 +494,7 @@ static struct device_driver tfsr_driver = {
  * initialize bml device structure
  */
 static struct platform_device tfsr_device = {
-	.name	= DEVICE_NAME,
+	.name   = DEVICE_NAME,
 };
 
 /**
@@ -580,8 +521,8 @@ int __init bml_blkdev_init(void)
 		return -ENOMEM;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
-        if (platform_driver_register(&tfsr_driver)) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30)
+        if (driver_register(&tfsr_driver.driver)) {
 #else	
 	if (driver_register(&tfsr_driver)) {
 #endif
@@ -593,8 +534,8 @@ int __init bml_blkdev_init(void)
 
 	if (platform_device_register(&tfsr_device)) {
 		ERRPRINTK("TinyFSR: Can't register platform device(major:%d)\n", MAJOR_NR);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
-                platform_driver_unregister(&tfsr_driver);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30)
+                driver_unregister(&tfsr_driver.driver);
 #else
 		driver_unregister(&tfsr_driver);
 #endif
@@ -628,8 +569,8 @@ void __exit bml_blkdev_exit(void)
 	}
 
 	platform_device_unregister(&tfsr_device);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
-        platform_driver_unregister(&tfsr_driver);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30)
+        driver_unregister(&tfsr_driver.driver);
 #else
 	driver_unregister(&tfsr_driver);
 #endif

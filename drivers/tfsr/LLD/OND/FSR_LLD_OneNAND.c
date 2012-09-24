@@ -1,31 +1,22 @@
 /**
- *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b036-FSR_1.2.1p1_b139_RTM
+ *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  *
- *   @section Intro Intro
+ *   @section Intro
  *       Flash Translation Layer for Flex-OneNAND and OneNAND
- *   
- *     @MULTI_BEGIN@ @COPYRIGHT_DEFAULT
- *     @section Copyright COPYRIGHT_DEFAULT
- *            COPYRIGHT. SAMSUNG ELECTRONICS CO., LTD.
- *                                    ALL RIGHTS RESERVED
- *     Permission is hereby granted to licensees of Samsung Electronics Co., Ltd. products
- *     to use this computer program only in accordance 
- *     with the terms of the SAMSUNG FLASH MEMORY DRIVER SOFTWARE LICENSE AGREEMENT.
- *     @MULTI_END@
- *
- *     @MULTI_BEGIN@ @COPYRIGHT_GPL
- *     @section Copyright COPYRIGHT_GPL
- *            COPYRIGHT. SAMSUNG ELECTRONICS CO., LTD.
- *                                    ALL RIGHTS RESERVED
- *     This program is free software; you can redistribute it and/or modify it
- *     under the terms of the GNU General Public License version 2 
- *     as published by the Free Software Foundation.
- *     @MULTI_END@
+ *    
+ *    @section  Copyright
+ *---------------------------------------------------------------------------*
+ *                                                                           *
+ * Copyright (C) 2003-2010 Samsung Electronics                               *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the GNU General Public License version 2 as         *
+ * published by the Free Software Foundation.                                *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
  *
  *     @section Description
  *
  */
-
 
 /**
  * @file      FSR_LLD_OneNAND.c
@@ -593,14 +584,29 @@ PRIVATE const OneNANDSpec gstONDSpec[] = {
 /* 15.                                                                      nTEraseTime     */
 /* 16.                                                                           nSLCPECycle*/
 /********************************************************************************************/
-    /* KFM1G16Q2M */
+    /* KFG1G16Q2M */
     { 0x00EC, 0x0030, 1024, 1024, 1, 16, 4, 20, 64, 1, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
 
-    /* KFN2G16Q2A */
-    { 0x00EC, 0x0048, 2048, 1024, 1, 16, 4, 40, 64, 2, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
+    /* KFG1G16U2D (OneNAND 1G D-die)*/
+    { 0x00EC, 0x0035, 1024, 1024, 1, 16, 4, 20, 64, 1, 50, TRUE32, 30, 250, 2000, 100000, 0x5555, 0},
+
+    /* KFM1G16Q2D (OneNAND MUX 1G D-die)*/
+    { 0x00EC, 0x0030, 1024, 1024, 1, 16, 4, 20, 64, 1, 50, TRUE32, 30, 250, 2000, 100000, 0x5555, 0},
+
+    /* KFG1G16Q2D (OneNAND 1G D-die)*/
+    { 0x00EC, 0x0034, 1024, 1024, 1, 16, 4, 20, 64, 1, 50, TRUE32, 30, 250, 2000, 100000, 0x5555, 0},
+
+    /* KFG2G16Q2M */
+    { 0x00EC, 0x0044, 2048, 2048, 2, 16, 4, 40, 64, 1, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
+
+    /* KFH4G16Q2M */
+    { 0x00EC, 0x005C, 4096, 2048, 2, 16, 4, 80, 64, 2, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
 
     /* KFM2G16Q2M */
     { 0x00EC, 0x0040, 2048, 2048, 2, 16, 4, 40, 64, 1, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
+
+    /* KFN2G16Q2A */
+    { 0x00EC, 0x0048, 2048, 1024, 1, 16, 4, 40, 64, 2, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
 
     /* KFN4G16Q2M */
     { 0x00EC, 0x0058, 4096, 2048, 2, 16, 4, 80, 64, 2, 50, TRUE32, 30, 220, 2000, 100000, 0x5555, 0},
@@ -1076,13 +1082,16 @@ FSR_OND_Open(UINT32  nDev,
              FsrVolParm        *pstParm;
              UINT32             nCnt;
              UINT32             nIdx;
-             UINT32             nDie;
+             UINT32             nDie;             
              INT32              nLLDRe              = FSR_LLD_SUCCESS;
              UINT32             nRdTransferTime;
              UINT32             nWrTransferTime;
              UINT16             nMID;
              UINT16             nDID;
+
+#if !defined(FSR_OAM_RTLMSG_DISABLE)
              UINT16             nVID;
+#endif
              UINT16             nDID2               = 0;
              UINT16             nShifted;
              UINT16             nNumOfBlksIn2ndDie;
@@ -1239,7 +1248,10 @@ FSR_OND_Open(UINT32  nDev,
 
         nMID = OND_READ(pstFOReg->nMID);
         nDID = OND_READ(pstFOReg->nDID);
+
+#if !defined(FSR_OAM_RTLMSG_DISABLE)
         nVID = OND_READ(pstFOReg->nVerID);
+#endif
 
         FSR_DBZ_RTLMOUT(FSR_DBZ_LLD_INF,
             (TEXT("            nDev=%d, nMID=0x%04x, nDID=0x%04x, nVID=0x%04x\r\n"),
@@ -1399,13 +1411,8 @@ FSR_OND_Open(UINT32  nDev,
             break;
         }
 
-#if defined (FSR_LLD_STATISTICS)
         /* Time for transfering 16 bits between host & DataRAM of OneNAND */
         _CalcTransferTime(nDev, &nRdTransferTime, &nWrTransferTime);
-#else
-        nRdTransferTime = 0;
-        nWrTransferTime = 0;
-#endif
 
         pstONDCxt->nRdTranferTime  = nRdTransferTime; /* nano second base */
         pstONDCxt->nWrTranferTime  = nWrTransferTime; /* nano second base */
@@ -4208,8 +4215,12 @@ FSR_OND_FlushOp(UINT32 nDev,
     volatile OneNANDReg       *pstFOReg;
              INT32             nLLDRe       = FSR_LLD_SUCCESS;
              UINT32            nPrevOp;
+
+#if !defined(FSR_OAM_RTLMSG_DISABLE)
              UINT32            nPrevPbn;
              UINT32            nPrevPgOffset;
+#endif
+
              UINT32            nPrevFlag;
              UINT32            nMasterInt   = 0;
              UINT16            nECCRes;
@@ -4247,8 +4258,11 @@ FSR_OND_FlushOp(UINT32 nDev,
 
         nPrevOp       = pstONDShMem->nPreOp[nDieIdx];
         nPrevFlag     = pstONDShMem->nPreOpFlag[nDieIdx];
+
+#if !defined(FSR_OAM_RTLMSG_DISABLE)
         nPrevPbn      = pstONDShMem->nPreOpPbn[nDieIdx];
         nPrevPgOffset = pstONDShMem->nPreOpPgOffset[nDieIdx];
+#endif
 
         /* Set DBS */
         OND_WRITE(pstFOReg->nStartAddr2, 
@@ -4308,6 +4322,9 @@ FSR_OND_FlushOp(UINT32 nDev,
                     FSR_DBZ_RTLMOUT(FSR_DBZ_LLD_INF | FSR_DBZ_ERROR,
                         (TEXT("            read disturbance at nPbn:%d, nPgOffset:%d\r\n"),
                         pstONDShMem->nPreOpPbn[nDieIdx], pstONDShMem->nPreOpPgOffset[nDieIdx]));
+
+                    _DumpRegisters(pstFOReg);
+                    _DumpSpareBuffer(pstFOReg, nDev, nDieIdx);
                 }
             }
             break;
@@ -5266,13 +5283,15 @@ FSR_OND_IOCtl(UINT32  nDev,
     volatile OneNANDReg       *pstFOReg;
              UINT32            nLockValue;
              UINT32            nLockType;
-             UINT32            nDie         = 0xFFFFFFFF;
+             UINT32            nDie         = 0;
+             UINT32            nDieIdx      = 0;
              UINT32            nRegVal;
              UINT32            nErrPbn      = 0;
              INT32             nLLDRe       = FSR_LLD_SUCCESS;
              UINT16            nPbn         = 0;
 
     FSR_STACK_VAR;
+
     FSR_STACK_END;
 
     FSR_DBZ_DBGMOUT(FSR_DBZ_LLD_IF | FSR_DBZ_LLD_LOG, 
@@ -5303,10 +5322,10 @@ FSR_OND_IOCtl(UINT32  nDev,
         switch (nCode)
         {
         case FSR_LLD_IOCTL_OTP_ACCESS:
-            nDie                         = *(UINT32 *) pBufI;
-            pstONDShMem->nPreOp[nDie] = FSR_OND_PREOP_IOCTL;
+            nDieIdx                    = *(UINT32 *) pBufI;
+            pstONDShMem->nPreOp[nDieIdx] = FSR_OND_PREOP_IOCTL;
 
-            if(_SearchUnlockedPbn(nDev, nDie, &pstONDCxt->nUnlockedPbn) == FALSE32)
+            if(_SearchUnlockedPbn(nDev, nDieIdx, &pstONDCxt->nUnlockedPbn) == FALSE32)
             {
                 pstONDCxt->nUnlockedPbn = FSR_OND_NULL_VBN;
             }
@@ -5316,8 +5335,8 @@ FSR_OND_IOCtl(UINT32  nDev,
              * 0th die has OTP area. so, if the version is updated, argument should be
              * changed to follow the argument - pBufI : means die number.
              */
-            OND_WRITE(pstFOReg->nStartAddr2 , (UINT16) nDie << FSR_OND_DBS_BASEBIT);
-            OND_WRITE(pstFOReg->nStartAddr1 , (UINT16) nDie << FSR_OND_DFS_BASEBIT);
+            OND_WRITE(pstFOReg->nStartAddr2 , (UINT16) nDieIdx << FSR_OND_DBS_BASEBIT);
+            OND_WRITE(pstFOReg->nStartAddr1 , (UINT16) nDieIdx << FSR_OND_DFS_BASEBIT);
             
             OND_WRITE(pstFOReg->nInt, FSR_OND_INT_CLEAR);
 
@@ -5344,7 +5363,6 @@ FSR_OND_IOCtl(UINT32  nDev,
             }
 
             nLockType = *(UINT32 *) pBufI;
-            nDie = 0;
 
             /* Lock 1st block OTP & OTP block */
             if (nLockType == (FSR_LLD_OTP_LOCK_1ST_BLK | FSR_LLD_OTP_LOCK_OTP_BLK))
@@ -5376,6 +5394,9 @@ FSR_OND_IOCtl(UINT32  nDev,
 
             nLLDRe = _LockOTP(nDev, nLockValue);
 
+            nDie = 0;
+            pstONDShMem->nPreOp[nDie] = FSR_OND_PREOP_IOCTL;
+
             if (pByteRet != NULL)
             {
                 *pByteRet = (UINT32) 0;
@@ -5385,7 +5406,6 @@ FSR_OND_IOCtl(UINT32  nDev,
         case FSR_LLD_IOCTL_OTP_GET_INFO:
             /* Set DBS                         */
             nPbn = 0;
-            nDie = 0;
             OND_WRITE(pstFOReg->nStartAddr2, 
                       ((UINT16) nPbn << pstONDCxt->nDDPSelSft) & FSR_OND_MASK_DBS);
             
@@ -5431,12 +5451,11 @@ FSR_OND_IOCtl(UINT32  nDev,
             }
 
             pLLDProtectionArg   = (LLDProtectionArg *) pBufI;
-            nDie                = (pLLDProtectionArg->nStartBlk >> 
-                                   (FSR_OND_DFS_BASEBIT - pstONDCxt->nDDPSelSft)) & 0x1;
-            nLLDRe              = _LockTightBlocks(nDev,
-                                                   pLLDProtectionArg->nStartBlk,
+            nLLDRe              = _LockTightBlocks(nDev, 
+                                                   pLLDProtectionArg->nStartBlk, 
                                                    pLLDProtectionArg->nBlks,
                                                    &nErrPbn);
+         
             if (nLLDRe == FSR_LLD_BLK_PROTECTION_ERROR)
             {
                 *(UINT32 *) pBufO = nErrPbn;
@@ -5464,12 +5483,12 @@ FSR_OND_IOCtl(UINT32  nDev,
             }
 
             pLLDProtectionArg   = (LLDProtectionArg *) pBufI;
-            nDie                = (pLLDProtectionArg->nStartBlk >> 
-                                   (FSR_OND_DFS_BASEBIT - pstONDCxt->nDDPSelSft)) & 0x1;
-            nLLDRe              = _LockBlocks(nDev,
-                                              pLLDProtectionArg->nStartBlk,
+
+            nLLDRe              = _LockBlocks(nDev, 
+                                              pLLDProtectionArg->nStartBlk, 
                                               pLLDProtectionArg->nBlks,
                                               &nErrPbn);
+         
             if (nLLDRe == FSR_LLD_BLK_PROTECTION_ERROR)
             {
                 *(UINT32 *) pBufO = nErrPbn;
@@ -5497,10 +5516,9 @@ FSR_OND_IOCtl(UINT32  nDev,
             }
 
             pLLDProtectionArg   = (LLDProtectionArg *) pBufI;
-            nDie                = (pLLDProtectionArg->nStartBlk >> 
-                                   (FSR_OND_DFS_BASEBIT - pstONDCxt->nDDPSelSft)) & 0x1;
+
             nLLDRe              = _UnLockBlocks(nDev, 
-                                                pLLDProtectionArg->nStartBlk,
+                                                pLLDProtectionArg->nStartBlk, 
                                                 pLLDProtectionArg->nBlks,
                                                 &nErrPbn);
 
@@ -5581,15 +5599,17 @@ FSR_OND_IOCtl(UINT32  nDev,
         case FSR_LLD_IOCTL_GET_LOCK_STAT:
             if ((nLenI != sizeof(UINT32)) || (pBufO == NULL) || (nLenO < sizeof(UINT32)))
             {
-                FSR_DBZ_RTLMOUT(FSR_DBZ_ERROR ,
-                    (TEXT("[OND:ERR]   (IO_CTRL)invalid parameter pBufO = 0x#010x, nLenO = %d\r\n"), 
-                    pBufO, nLenO));
+                FSR_DBZ_RTLMOUT(FSR_DBZ_ERROR , 
+                               (TEXT("[OND:ERR]   (IO_CTRL)invalid parameter pBufO = 0x#010x, nLenO = %d\r\n"), 
+                               pBufO, nLenO));
                 nLLDRe = FSR_LLD_INVALID_PARAM;
                 break;
             }
 
             nPbn    = (UINT16) *(UINT32 *) pBufI;
-            nDie                      = (nPbn >> (FSR_OND_DFS_BASEBIT - pstONDCxt->nDDPSelSft)) & 0x1;
+
+            nDieIdx                      = (nPbn >> (FSR_OND_DFS_BASEBIT - pstONDCxt->nDDPSelSft)) & 0x1;
+            pstONDShMem->nPreOp[nDieIdx] = FSR_OND_PREOP_IOCTL;
 
             /* Set DBS       */
             OND_WRITE(pstFOReg->nStartAddr2, 
@@ -5641,28 +5661,12 @@ FSR_OND_IOCtl(UINT32  nDev,
             WAIT_OND_INT_STAT(pstFOReg, FSR_OND_INT_READY);
             break;
 
-        case FSR_LLD_IOCTL_SYS_CONF_RECOVERY:
-            OND_WRITE(pstFOReg->nSysConf1, pstONDCxt->nSysConf1);
-            break;
-
         default:
             nLLDRe = FSR_LLD_IOCTL_NOT_SUPPORT;
             break;
         }
 
-        if ((nCode == FSR_LLD_IOCTL_HOT_RESET) ||
-            (nCode == FSR_LLD_IOCTL_CORE_RESET) ||
-            (nCode == FSR_LLD_IOCTL_SYS_CONF_RECOVERY))
-        {
-            for (nDie = 0; nDie < pstONDSpec->nNumOfDies; nDie++)
-            {
-                pstONDShMem->nPreOp[nDie]         = FSR_OND_PREOP_IOCTL;
-                pstONDShMem->nPreOpPbn[nDie]      = FSR_OND_PREOP_ADDRESS_NONE;
-                pstONDShMem->nPreOpPgOffset[nDie] = FSR_OND_PREOP_ADDRESS_NONE;
-                pstONDShMem->nPreOpFlag[nDie]     = FSR_OND_PREOP_FLAG_NONE;
-            }
-        }
-        else if ((nLLDRe != FSR_LLD_INVALID_PARAM) && (nLLDRe != FSR_LLD_IOCTL_NOT_SUPPORT))
+        if ((nLLDRe != FSR_LLD_INVALID_PARAM) && (nLLDRe != FSR_LLD_IOCTL_NOT_SUPPORT))
         {
             FSR_ASSERT(nDie != 0xFFFFFFFF);
 
@@ -5671,6 +5675,7 @@ FSR_OND_IOCtl(UINT32  nDev,
             pstONDShMem->nPreOpPgOffset[nDie] = FSR_OND_PREOP_ADDRESS_NONE;
             pstONDShMem->nPreOpFlag[nDie]     = FSR_OND_PREOP_FLAG_NONE;
         }
+
     } while (0);
 
     FSR_DBZ_DBGMOUT(FSR_DBZ_LLD_IF | FSR_DBZ_LLD_LOG, 
@@ -6498,8 +6503,6 @@ _CopyToAnotherDataRAM(UINT32        nDev,
 
 }
 
-
-#if defined(FSR_LLD_STATISTICS)
 /**
  * @brief           This function calculates transfer time for word (2 bytes)
  * @n               between host & OneNAND
@@ -6643,9 +6646,6 @@ _CalcTransferTime(UINT32 nDev, UINT32 *pnWordRdCycle, UINT32 *pnWordWrCycle)
 
     FSR_DBZ_DBGMOUT(FSR_DBZ_LLD_LOG, (TEXT("[OND:OUT] --%s\r\n"), __FSR_FUNC__));
 }
-#endif
-
-
 
 /**
  * @brief           This function gets the unique ID from OneNAND OTP

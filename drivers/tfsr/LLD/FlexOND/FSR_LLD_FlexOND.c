@@ -1,28 +1,20 @@
 /**
- *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b036-FSR_1.2.1p1_b139_RTM
+ *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  *
- *   @section Intro Intro
+ *   @section Intro
  *       Flash Translation Layer for Flex-OneNAND and OneNAND
- *   
- *     @MULTI_BEGIN@ @COPYRIGHT_DEFAULT
- *     @section Copyright COPYRIGHT_DEFAULT
- *            COPYRIGHT. SAMSUNG ELECTRONICS CO., LTD.
- *                                    ALL RIGHTS RESERVED
- *     Permission is hereby granted to licensees of Samsung Electronics Co., Ltd. products
- *     to use this computer program only in accordance 
- *     with the terms of the SAMSUNG FLASH MEMORY DRIVER SOFTWARE LICENSE AGREEMENT.
- *     @MULTI_END@
+ *    
+ *   @section  Copyright
+ *---------------------------------------------------------------------------*
+ *                                                                           *
+ * Copyright (C) 2003-2010 Samsung Electronics                               *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the GNU General Public License version 2 as         *
+ * published by the Free Software Foundation.                                *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
  *
- *     @MULTI_BEGIN@ @COPYRIGHT_GPL
- *     @section Copyright COPYRIGHT_GPL
- *            COPYRIGHT. SAMSUNG ELECTRONICS CO., LTD.
- *                                    ALL RIGHTS RESERVED
- *     This program is free software; you can redistribute it and/or modify it
- *     under the terms of the GNU General Public License version 2 
- *     as published by the Free Software Foundation.
- *     @MULTI_END@
- *
- *     @section Description
+ *   @section Description
  *
  */
 
@@ -1373,15 +1365,9 @@ FSR_FND_Open(UINT32  nDev,
 
         FSR_OAM_MEMSET(pstFNDCxt->pTempBuffer, 0x00, nBytesPerPage);
 
-
-#if defined (FSR_LLD_STATISTICS)
         /* Calculate time for transfering 16 bits between host & DataRAM of OneNAND */
         _CalcTransferTime(nDev, pstFNDCxt->nSysConf1,
                           &nRdTransferTime, &nWrTransferTime);
-#else
-        nRdTransferTime = 0;
-        nWrTransferTime = 0;
-#endif
 
         pstFNDCxt->nRdTranferTime  = nRdTransferTime; /* Nano second base */
         pstFNDCxt->nWrTranferTime  = nWrTransferTime; /* Nano second base */
@@ -3675,7 +3661,10 @@ FSR_FND_FlushOp(UINT32 nDev,
              UINT32            nIdx;
              UINT32            nPrevOp;
              UINT32            nPrevPbn;
+
+#if !defined(FSR_OAM_RTLMSG_DISABLE)
              UINT32            nPrevPgOffset;
+#endif
              UINT32            nPrevFlag;
              UINT32            nBlockType;
              INT32             nLLDRe       = FSR_LLD_SUCCESS;
@@ -3721,7 +3710,10 @@ FSR_FND_FlushOp(UINT32 nDev,
 
         nPrevOp       = pstFNDShMem->nPreOp[nDie];
         nPrevPbn      = pstFNDShMem->nPreOpPbn[nDie];
+
+#if !defined(FSR_OAM_RTLMSG_DISABLE)
         nPrevPgOffset = pstFNDShMem->nPreOpPgOffset[nDie];
+#endif
         nPrevFlag     = pstFNDShMem->nPreOpFlag[nDie];
 
         /* Set DBS */
@@ -3808,6 +3800,9 @@ FSR_FND_FlushOp(UINT32 nDev,
                             FSR_DBZ_RTLMOUT(FSR_DBZ_LLD_INF | FSR_DBZ_ERROR,
                                 (TEXT("            Detected at ECC Register[%d]:0x%04x\r\n"),
                                 nIdx, nECCRes));
+
+                            _DumpRegisters(pstFOReg);
+                            _DumpSpareBuffer(pstFOReg);
 
 #if defined(FSR_LLD_PE_TEST)
                             gnECCStat0 = FND_READ(pstFOReg->nEccStat[0]);
@@ -5072,18 +5067,12 @@ FSR_FND_IOCtl(UINT32  nDev,
             }
             break;
 
-        case FSR_LLD_IOCTL_SYS_CONF_RECOVERY:
-            FND_WRITE(pstFOReg->nSysConf1, pstFNDCxt->nSysConf1);
-            break;
-
         default:
             nLLDRe = FSR_LLD_IOCTL_NOT_SUPPORT;
             break;
         }
 
-        if ((nCode == FSR_LLD_IOCTL_HOT_RESET) ||
-            (nCode == FSR_LLD_IOCTL_CORE_RESET) || 
-            (nCode == FSR_LLD_IOCTL_SYS_CONF_RECOVERY))
+        if ((nCode == FSR_LLD_IOCTL_HOT_RESET) || (nCode == FSR_LLD_IOCTL_CORE_RESET))
         {
             /* Initialize shared memory */
             for (nDie = 0; nDie < pstFNDSpec->nNumOfDies; nDie++)
@@ -6248,8 +6237,6 @@ _DumpCmdLog(VOID)
 #endif /* #if !defined(FSR_OAM_RTLMSG_DISABLE) */
 }
 
-
-#if defined(FSR_LLD_STATISTICS)
 /**
  * @brief           This function calculates transfer time for word (2 bytes)
  * @n               between host & OneNAND
@@ -6405,7 +6392,6 @@ _CalcTransferTime(UINT32  nDev,
     FSR_DBZ_DBGMOUT(FSR_DBZ_LLD_LOG,
         (TEXT("[FND:OUT] --%s(nDev:%d)\r\n"), __FSR_FUNC__, nDev));
 }
-#endif
 
 
 

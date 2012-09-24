@@ -9,7 +9,7 @@
  *---------------------------------------------------------------------------*
 */
 /**
- * @version	LinuStoreIII_1.2.0_b036-FSR_1.2.1p1_b139_RTM
+ * @version	LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  * @file	drivers/tfsr/tfsr_base.h
  * @brief	The most commom part and some inline functions to mainipulate
  *		the FSR instance (volume specification, partition table)
@@ -33,8 +33,30 @@
 #include <FSR_BML.h>
 #include <FSR_LLD.h>
 #ifdef CONFIG_PM
-//#include <../Core/BML/FSR_BML_Types.h>
-//#include <../Core/BML/FSR_BML_BIFCommon.h>
+#include <Core/BML/FSR_BML_Types.h>
+#include <Core/BML/FSR_BML_BIFCommon.h>
+#endif
+
+/*
+ * kernel version macro
+ */
+#undef FSR_FOR_2_6
+#undef FSR_FOR_2_6_14
+#undef FSR_FOR_2_6_15
+#undef FSR_FOR_2_6_19
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
+#define FSR_FOR_2_6             1
+#endif
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19)
+#define FSR_FOR_2_6_19          1
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 15)
+#define FSR_FOR_2_6_15          1
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 14)
+#define FSR_FOR_2_6_14          1
 #endif
 
 #define SECTOR_SIZE             512
@@ -229,7 +251,7 @@ static inline unsigned int fsr_stl_page_size(stl_info_t *ssp)
 
 /* kernel 2.6 */
 #include <linux/version.h>
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
+#ifdef FSR_FOR_2_6
 #include <linux/blkdev.h>
 
 struct fsr_dev 

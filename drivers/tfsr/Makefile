@@ -4,8 +4,8 @@
 #   Copyright(c) 2004-2009, Samsung Electronics, Co., Ltd.
 #
 
-EXTRA_CFLAGS	+= -Idrivers/tfsr/Inc \
-		   -Idrivers/tfsr
+EXTRA_CFLAGS	+= -I$(TOPDIR)/drivers/tfsr/Inc \
+		   -I$(TOPDIR)/drivers/tfsr
 
 # For FSR 1.5 RC5 and below version
 EXTRA_CFLAGS	+= -DFSR_LINUX_OAM 

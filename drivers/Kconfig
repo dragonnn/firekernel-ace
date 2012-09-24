@@ -10,7 +10,7 @@ source "drivers/mtd/Kconfig"
 #@source "drivers/fsr/Kconfig"
   
 # for TINY_FSR
-source "drivers/tfsr/Kconfig"
+#source "drivers/tfsr/Kconfig"
 
 source "drivers/of/Kconfig"
 
@@ -124,5 +124,9 @@ source "drivers/dpram/Kconfig"
 
 source "drivers/uv/Kconfig"
 
+source "drivers/tfsr/Kconfig"
+
 #@source "drivers/param/Kconfig"
+
+source "drivers/samsung/Kconfig"
 endmenu

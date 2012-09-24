@@ -25,13 +25,13 @@ tfsr-objs	+= OAM/Linux/FSR_OAM_Linux.o
 ifeq ($(CONFIG_MACH_OMAP_APOLLON),y)
 tfsr-objs   += PAM/ApollonPLUS/FSR_PAM_ApollonPLUS.o
 else
-tfsr-objs   += PAM/Poseidon/FSR_PAM_Poseidon.o
+tfsr-objs   += PAM/s5pc110/FSR_PAM_s5pc110.o
 endif #CONFIG_MACH_OMAP_APOLLON
 
 ifeq ($(CONFIG_ARM),y)
-tfsr-objs   += PAM/Poseidon/FSR_PAM_asm.o
+tfsr-objs   += PAM/s5pc110/FSR_PAM_asm.o
 else
-tfsr-objs   += PAM/Poseidon/FSR_PAM_Memcpy.o
+tfsr-objs   += PAM/s5pc110/FSR_PAM_Memcpy.o
 endif #CONFIG_ARM
 
 tfsr-objs	+= Misc/FSR_Version.o Misc/FSR_DBG_Zone.o 

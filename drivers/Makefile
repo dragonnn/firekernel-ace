@@ -121,3 +121,5 @@ obj-y				+= ieee802154/
 obj-y				+= dpram/
 #obj-$(CONFIG_MSM_PARAM)		+= param/
 obj-y				+= compcache/
+obj-$(CONFIG_TINY_FSR)		+= tfsr/
+obj-$(CONFIG_SAMSUNG_MODULES)   += samsung/

@@ -1,26 +1,18 @@
 /**
- *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b036-FSR_1.2.1p1_b139_RTM
+ *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  *
- *   @section Intro Intro
+ *   @section Intro
  *       Flash Translation Layer for Flex-OneNAND and OneNAND
- *   
- *     @MULTI_BEGIN@ @COPYRIGHT_DEFAULT
- *     @section Copyright COPYRIGHT_DEFAULT
- *            COPYRIGHT. SAMSUNG ELECTRONICS CO., LTD.
- *                                    ALL RIGHTS RESERVED
- *     Permission is hereby granted to licensees of Samsung Electronics Co., Ltd. products
- *     to use this computer program only in accordance 
- *     with the terms of the SAMSUNG FLASH MEMORY DRIVER SOFTWARE LICENSE AGREEMENT.
- *     @MULTI_END@
- *
- *     @MULTI_BEGIN@ @COPYRIGHT_GPL
- *     @section Copyright COPYRIGHT_GPL
- *            COPYRIGHT. SAMSUNG ELECTRONICS CO., LTD.
- *                                    ALL RIGHTS RESERVED
- *     This program is free software; you can redistribute it and/or modify it
- *     under the terms of the GNU General Public License version 2 
- *     as published by the Free Software Foundation.
- *     @MULTI_END@
+ *    
+ *    @section  Copyright
+ *---------------------------------------------------------------------------*
+ *                                                                           *
+ * Copyright (C) 2003-2010 Samsung Electronics                               *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the GNU General Public License version 2 as         *
+ * published by the Free Software Foundation.                                *
+ *                                                                           *
+ *---------------------------------------------------------------------------*
  *
  *     @section Description
  *
@@ -181,7 +173,7 @@ typedef     UINT32                              SM32;
 #define     FSR_VER_MINOR1          2       /** FSR minor1 version           */
 #define     FSR_VER_MINOR2          1       /** FSR minor2 version           */
 #define     FSR_VER_PATCHLEVEL      1       /** FSR patch version            */
-#define     FSR_BUILD_NUMBER        139     /** FSR build number             */
+#define     FSR_BUILD_NUMBER        129     /** FSR build number             */
 
 #define     FSR_VER_PREFIX          "FSR_"  /** FSR version prefix           */
 #define     FSR_VERSION_RCX         "RTM"   /** FSR version RC{X} or RTM     */

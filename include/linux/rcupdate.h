@@ -33,6 +33,7 @@
 #ifndef __LINUX_RCUPDATE_H
 #define __LINUX_RCUPDATE_H
 
+#include <linux/rcu_types.h>
 #include <linux/cache.h>
 #include <linux/spinlock.h>
 #include <linux/threads.h>
@@ -54,10 +55,10 @@ extern int rcutorture_runnable; /* for sysctl */
  * @next: next update requests in a list
  * @func: actual update function to call after the grace period.
  */
-struct rcu_head {
-	struct rcu_head *next;
-	void (*func)(struct rcu_head *head);
-};
+//struct rcu_head {
+//	struct rcu_head *next;
+//	void (*func)(struct rcu_head *head);
+//};
 
 /* Exported common interfaces */
 extern void call_rcu_sched(struct rcu_head *head,

@@ -1,5 +1,5 @@
 /**
- *   @mainpage   Flex Sector Remapper : RFS_3.0.0_b022-Nestle_1.0.0_b014-BTFS_1.0.1_b024-LinuStoreIII_1.2.0_b029-FSR_1.2.1_b125_RTM
+ *   @mainpage   Flex Sector Remapper : LinuStoreIII_1.2.0_b032-FSR_1.2.1p1_b129_RTM
  *
  *   @section Intro
  *       Flash Translation Layer for Flex-OneNAND and OneNAND
@@ -7,7 +7,7 @@
  *    @section  Copyright
  *---------------------------------------------------------------------------*
  *                                                                           *
- * Copyright (C) 2003-2009 Samsung Electronics                               *
+ * Copyright (C) 2003-2010 Samsung Electronics                               *
  * This program is free software; you can redistribute it and/or modify      *
  * it under the terms of the GNU General Public License version 2 as         *
  * published by the Free Software Foundation.                                *
