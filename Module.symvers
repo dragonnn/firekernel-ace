@@ -4556,7 +4556,6 @@
 0x00000000	cryptd_free_ahash	vmlinux	EXPORT_SYMBOL_GPL
 0x00000000	eventfd_ctx_fileget	vmlinux	EXPORT_SYMBOL_GPL
 0x00000000	max_mapnr	vmlinux	EXPORT_SYMBOL
-0x00000000	msm_nand_data	vmlinux	EXPORT_SYMBOL_GPL
 0x00000000	xprt_unregister_transport	vmlinux	EXPORT_SYMBOL_GPL
 0x00000000	drm_mm_search_free_in_range	vmlinux	EXPORT_SYMBOL
 0x00000000	eventfd_fget	vmlinux	EXPORT_SYMBOL_GPL

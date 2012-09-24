@@ -166,14 +166,11 @@ struct request {
 	unsigned long atomic_flags;
 
 	int cpu;
-	sector_t sector;	
+
 	/* the following two fields are internal, NEVER access directly */
 	unsigned int __data_len;	/* total data len */
 	sector_t __sector;		/* sector cursor */
-	unsigned int current_nr_sectors;
-	unsigned long hard_nr_sectors;
-	unsigned long nr_sectors;
-	unsigned int hard_cur_sectors;
+
 	struct bio *bio;
 	struct bio *biotail;
 
@@ -409,8 +406,6 @@ struct request_queue
 	unsigned int		nr_congestion_on;
 	unsigned int		nr_congestion_off;
 	unsigned int		nr_batching;
-
-	unsigned short		max_phys_segments;
 
 	void			*dma_drain_buffer;
 	unsigned int		dma_drain_size;
@@ -918,7 +913,7 @@ extern bool __blk_end_request(struct request *rq, int error,
 extern void __blk_end_request_all(struct request *rq, int error);
 extern bool __blk_end_request_cur(struct request *rq, int error);
 extern bool __blk_end_request_err(struct request *rq, int error);
-extern void end_request(struct request *, int);
+
 extern void blk_complete_request(struct request *);
 extern void __blk_complete_request(struct request *);
 extern void blk_abort_request(struct request *);

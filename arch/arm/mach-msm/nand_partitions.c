@@ -45,14 +45,19 @@ struct msm_ptbl_entry {
 	__u32 size;
 	__u32 flags;
 };
-
-#define MSM_MAX_PARTITIONS 14
+#if defined(MTD_MSM_NAND)
+	#define MSM_MAX_PARTITIONS 14
+#else
+	#define MSM_MAX_PARTITIONS 8
+#endif
 
 static struct mtd_partition msm_nand_partitions[MSM_MAX_PARTITIONS];
 static char msm_nand_names[MSM_MAX_PARTITIONS * 16];
 
 extern struct flash_platform_data msm_nand_data;
-EXPORT_SYMBOL_GPL(msm_nand_data);
+#if defined(MTD_MSM_NAND)
+	EXPORT_SYMBOL_GPL(msm_nand_data);
+#endif
 static int __init parse_tag_msm_partition(const struct tag *tag)
 {
 	struct mtd_partition *ptn = msm_nand_partitions;

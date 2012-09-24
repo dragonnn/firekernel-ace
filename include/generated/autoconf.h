@@ -1,7 +1,7 @@
 /*
  * Automatically generated C config: don't edit
  * Linux kernel version: 2.6.35.14
- * Mon Sep 24 16:54:57 2012
+ * Mon Sep 24 18:01:13 2012
  */
 #define AUTOCONF_INCLUDED
 #define CONFIG_RING_BUFFER 1
@@ -108,6 +108,7 @@
 #define CONFIG_ARM_L1_CACHE_SHIFT 5
 #define CONFIG_VIDEO_OUTPUT_CONTROL 1
 #define CONFIG_BT_RFCOMM_TTY 1
+#define CONFIG_TMD27711_PLSENSOR 1
 #define CONFIG_CRYPTO_MANAGER_TESTS 1
 #define CONFIG_NETFILTER_XT_MATCH_STRING 1
 #define CONFIG_IP_NF_TARGET_LOG 1

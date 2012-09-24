@@ -124,7 +124,7 @@ source "drivers/dpram/Kconfig"
 
 source "drivers/uv/Kconfig"
 
-source "drivers/tfsr/Kconfig"
+#source "drivers/tfsr/Kconfig"
 
 #@source "drivers/param/Kconfig"
 

@@ -81,7 +81,6 @@ deps_config := \
 	fs/ext3/Kconfig \
 	fs/ext2/Kconfig \
 	fs/Kconfig \
-	drivers/tfsr/Kconfig \
 	drivers/uv/Kconfig \
 	drivers/dpram/Kconfig \
 	drivers/platform/x86/Kconfig \

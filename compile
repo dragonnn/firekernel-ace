@@ -17,5 +17,5 @@ rm cwm-zip/system/lib/modules/*
 cp ./output/modules/* cwm-zip/system/lib/modules
 cd cwm-zip
 zip -r -0 newkernel.zip ./* 
-adb push newkernel.zip /sdcard/
-adb reboot recovery
+adb push newkernel.zip /sdcard/new2.zip
+#adb reboot recovery

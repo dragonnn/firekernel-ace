@@ -1,1 +1,0 @@
-cmd_arch/arm/boot/compressed/piggy.xzkern := (cat arch/arm/boot/compressed/../Image | sh /home/dragonn/Android/experment/firekernel-ace/scripts/xz_wrap.sh && printf \\300\\141\\205\\000) > arch/arm/boot/compressed/piggy.xzkern || (rm -f arch/arm/boot/compressed/piggy.xzkern ; false)
