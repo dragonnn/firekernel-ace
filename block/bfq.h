@@ -358,9 +358,7 @@ struct bfq_data {
 	unsigned int bfq_raising_max_softrt_rate;
 
 	struct bfq_queue oom_bfqq;
- };
-
-
+};
 
 enum bfqq_state_flags {
 	BFQ_BFQQ_FLAG_busy = 0,		/* has requests or is under service */
